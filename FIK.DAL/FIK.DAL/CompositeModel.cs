@@ -24,11 +24,12 @@ namespace FIK.DAL
         /// <typeparam name="T"> Class Name </typeparam>
         /// <param name="model"> List or Single Object which need to perform operation </param>
         /// <param name="operationMode"> enum type OperationMode </param>
-        /// <param name="exlcudeAutogeneratePrimaryKey"></param>
-        /// <param name="slectiveProperty"> when need only some specific property to insert sample ( Id,Name,Amount, +Qty ) , for update if existing data need to increment or decrement then use + or - </param>
-        /// <param name="whereClauseParamForUpdate">generate And operation based where simple clause sample ( Id,Id2) </param>
+        /// <param name="exlcudeAutogeneratePrimaryKey">Optional Parameter , for skip auto generated column insert</param>
+        /// <param name="slectiveProperty"> Optional when need only some specific property to insert sample ( Id,Name,Amount, +Qty ) , for update if existing data need to increment or decrement then use + or - </param>
+        /// <param name="whereClauseParamForUpdate"> Optional generate And operation based where simple clause sample ( Id,Id2) </param>
+        ///  <param name="customeTable"> Optional when table name not represent class name </param>
         /// <returns> true or false </returns>
-        public bool AddRecordSet<T>(object model,  OperationMode operationMode, string exlcudeAutogeneratePrimaryKey, string slectiveProperty,string whereClauseParamForUpdate) 
+        public bool AddRecordSet<T>(object model,  OperationMode operationMode, string exlcudeAutogeneratePrimaryKey, string slectiveProperty,string whereClauseParamForUpdate,string customeTable) 
         {
             try
             {
@@ -55,6 +56,8 @@ namespace FIK.DAL
                 }
 
                 string tableName = ListTob[0].GetType().Name;
+                if (!string.IsNullOrEmpty(customeTable))
+                    tableName = customeTable;
 
                 list.Add(new CompositeModel { Model = NewModel,ObjectName= tableName, ObjectType = typeof(T), OperationMode = operationMode, ExlcudeAutogeneratePrimaryKey = exlcudeAutogeneratePrimaryKey, SlectiveProperty = slectiveProperty, WhereClauseParamForUpdate = whereClauseParamForUpdate });
                 return true;

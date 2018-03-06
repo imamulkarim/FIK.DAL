@@ -118,12 +118,12 @@ namespace WindowsForms.Client
             }
         }
 
-        decimal rcvNo = 1;
         private void btnCompositeInsetUpdate_Click(object sender, EventArgs e)
         {
 
-
             List<Purchase> listPurchase = new List<Purchase>();
+
+            string maxId = sqlDal.GetMaxId("RcvNo", "000", "Purchase", "R2018");
 
             {
                 Purchase model = new Purchase();
@@ -131,7 +131,7 @@ namespace WindowsForms.Client
                 model.Qty = 10;
                 //model.ID = ; auto generate
                 model.RcvDate = DateTime.Now;
-                model.RcvNo = "R2018/" + rcvNo.ToString("000");
+                model.RcvNo = maxId;
                 listPurchase.Add(model);
 
                 model = new Purchase();
@@ -139,10 +139,9 @@ namespace WindowsForms.Client
                 model.Qty = 15;
                 //model.ID = ; auto generate
                 model.RcvDate = DateTime.Now;
-                model.RcvNo = "R2018/" + rcvNo.ToString("000");
+                model.RcvNo = maxId;
                 listPurchase.Add(model);
             }
-            rcvNo++;
 
                 Stock model2 = new Stock();
                 List<Stock> listStock = new List<Stock>();
@@ -163,8 +162,8 @@ namespace WindowsForms.Client
 
 
             CompositeModel compositeModel = new CompositeModel();
-            compositeModel.AddRecordSet<Purchase>(listPurchase, OperationMode.Insert, "Id", "", "");
-            compositeModel.AddRecordSet<Stock>(listStock, OperationMode.InsertOrUpdaet, "", "PrdCode,+RcvQty", "PrdCode");
+            compositeModel.AddRecordSet<Purchase>(listPurchase, OperationMode.Insert, "Id", "", "","");
+            compositeModel.AddRecordSet<Stock>(listStock, OperationMode.InsertOrUpdaet, "", "PrdCode,+RcvQty", "PrdCode","");
 
 
             string msg = "";

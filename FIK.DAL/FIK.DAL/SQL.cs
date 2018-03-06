@@ -172,6 +172,7 @@ namespace FIK.DAL
                         {
                             PropertyDescriptor prop = props[i];
 
+                            var value = prop.GetValue(obj) == null ? DBNull.Value : prop.GetValue(obj);
 
                             if (!string.IsNullOrEmpty(ExlcudeAutogeneratePrimaryKey))
                             {
@@ -185,12 +186,12 @@ namespace FIK.DAL
                             {
                                 if (specificProperty.ToUpper().Contains(prop.Name.ToUpper()))
                                 {
-                                    oCmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(obj));
+                                    oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                 }
                             }
                             else
                             {
-                                oCmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(obj));
+                                oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                             }
 
                             //oPropertyValue
@@ -379,18 +380,21 @@ namespace FIK.DAL
                         {
                             PropertyDescriptor prop = props[i];
 
+                            var value = prop.GetValue(obj) == null ? DBNull.Value : prop.GetValue(obj);
+
+
                             if (!WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
                             {
                                 if (!string.IsNullOrEmpty(specificProperty))
                                 {
                                     if (specificProperty.ToUpper().Contains(prop.Name.ToUpper()))
                                     {
-                                        oCmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(obj));
+                                        oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                     }
                                 }
                                 else
                                 {
-                                    oCmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(obj));
+                                    oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                 }
                             }
 
@@ -399,14 +403,14 @@ namespace FIK.DAL
                                 if (WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
                                 {
                                     
-                                        oCmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(obj));
+                                        oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                     
                                 }
                             }
                             else
                             {
                                
-                                    oCmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(obj));
+                                    oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                 
                             }
 
@@ -827,6 +831,7 @@ namespace FIK.DAL
                             for (int i = 0; i < props.Count; i++)
                             {
                                 PropertyDescriptor prop = props[i];
+                                var value = prop.GetValue(obj) == null ? DBNull.Value : prop.GetValue(obj);
 
 
                                 if (!string.IsNullOrEmpty(c.SlectiveProperty))
@@ -840,12 +845,12 @@ namespace FIK.DAL
                                     }
                                     if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
                                     {
-                                        oCmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(obj));
+                                        oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                         continue;
                                     }
                                     if (c.WhereClauseParamForUpdate.ToUpper().Contains(prop.Name.ToUpper()))
                                     {
-                                        oCmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(obj));
+                                        oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                     }
                                 }
                                 else
@@ -857,7 +862,7 @@ namespace FIK.DAL
                                             continue;
                                         }
                                     }
-                                    oCmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(obj));
+                                    oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                 }
 
                                 //oPropertyValue
@@ -1038,6 +1043,48 @@ namespace FIK.DAL
             {
                 return null;
             }
+        }
+
+
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="coloumName">Table Column name where to get max value </param>
+        /// <param name="rightStringLength"> sample data like 000 or 0000 or 00 </param>
+        /// <param name="tableName"> Table name for get max </param>
+        /// <param name="prefix"> Serail Prefix </param>
+        /// <returns> string result of max data </returns>
+        public string GetMaxId(string coloumName, string rightStringLength, string tableName, string prefix)
+        {
+            string id = "";
+
+            string
+            selectQuery = @"SELECT ISNULL(MAX( CAST(SUBSTRING( " + coloumName + " ," + (prefix.Length + 1) + ", LEN(" + coloumName + @") ) AS INT) ),0)
+                            FROM " + tableName + @"
+                            WHERE " + coloumName + " LIKE '" + prefix + "%' ";
+
+            string msg = "";
+            DataTable dataTable = Select(selectQuery, ref msg);
+            if(dataTable==null || dataTable.Rows.Count == 0)
+            {
+                throw new Exception("Max generation fail, no record ,table or " + msg);
+            }
+
+            id = dataTable.Rows[0][0].ToString();
+            //id = (decimal.Parse(initialValue) + decimal.Parse(id)).ToString();
+            if (string.IsNullOrEmpty(id))
+            {
+                return prefix + decimal.Parse("1").ToString(rightStringLength);
+            }
+            else
+            {
+                //id = id.Substring(prefix.Length, id.Length - 1);
+                decimal _id = decimal.Parse(id) + 1;
+                return prefix + _id.ToString(rightStringLength);
+            }
+
+
         }
 
 
