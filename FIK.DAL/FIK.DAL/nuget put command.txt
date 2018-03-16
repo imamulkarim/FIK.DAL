@@ -1,0 +1,6 @@
+nuget spec FIK.DAL.csproj
+
+nuget pack FIK.DAL.csproj
+
+nuget push FIK.DAL.1.0.1.12.nupkg oy2m7745kyhb3idkjwnatp2qztbwp6su5i7tfk46li25ba -Source https://api.nuget.org/v3/index.json
+
