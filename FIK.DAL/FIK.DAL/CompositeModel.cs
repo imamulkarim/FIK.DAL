@@ -12,7 +12,7 @@ namespace FIK.DAL
         public OperationMode OperationMode { get; private set; }
         public string ExlcudeAutogeneratePrimaryKey { get; private set; }
         public string SlectiveProperty { get; private set; }
-        public string WhereClauseParamForUpdate { get; private set; }
+        public string WhereClauseParamForUpdateDelete { get; private set; }
         public Type ObjectType { get; private set; }
         public string ObjectName { get; private set; }
 
@@ -29,7 +29,7 @@ namespace FIK.DAL
         /// <param name="whereClauseParamForUpdate"> Optional generate And operation based where simple clause sample ( Id,Id2) </param>
         ///  <param name="customeTable"> Optional when table name not represent class name </param>
         /// <returns> true or false </returns>
-        public bool AddRecordSet<T>(object model,  OperationMode operationMode, string exlcudeAutogeneratePrimaryKey, string slectiveProperty,string whereClauseParamForUpdate,string customeTable) 
+        public bool AddRecordSet<T>(object model, OperationMode operationMode, string exlcudeAutogeneratePrimaryKey, string slectiveProperty, string whereClauseParamForUpdate, string customeTable)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace FIK.DAL
                 }
 
                 List<object> NewModel = new List<object>();
-                foreach(T a in ListTob)
+                foreach (T a in ListTob)
                 {
                     NewModel.Add(a);
                 }
@@ -59,7 +59,7 @@ namespace FIK.DAL
                 if (!string.IsNullOrEmpty(customeTable))
                     tableName = customeTable;
 
-                list.Add(new CompositeModel { Model = NewModel,ObjectName= tableName, ObjectType = typeof(T), OperationMode = operationMode, ExlcudeAutogeneratePrimaryKey = exlcudeAutogeneratePrimaryKey, SlectiveProperty = slectiveProperty, WhereClauseParamForUpdate = whereClauseParamForUpdate });
+                list.Add(new CompositeModel { Model = NewModel, ObjectName = tableName, ObjectType = typeof(T), OperationMode = operationMode, ExlcudeAutogeneratePrimaryKey = exlcudeAutogeneratePrimaryKey, SlectiveProperty = slectiveProperty, WhereClauseParamForUpdateDelete = whereClauseParamForUpdate });
                 return true;
             }
             catch (Exception ex)
@@ -76,8 +76,8 @@ namespace FIK.DAL
 
     }
 
-    public enum  OperationMode
+    public enum OperationMode
     {
-        Insert, Update, InsertOrUpdaet
+        Insert, Update, Delete, InsertOrUpdaet
     }
 }

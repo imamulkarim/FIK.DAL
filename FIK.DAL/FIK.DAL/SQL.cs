@@ -26,14 +26,14 @@ namespace FIK.DAL
         /// <param name="SQL">List of sql string </param>
         /// <param name="ErrorMsg">if any error occured then provide the output</param>
         /// <returns></returns>
-        public bool ExecuteQuery(List<string> SQL,ref string ErrorMsg)
+        public bool ExecuteQuery(List<string> SQL, ref string ErrorMsg)
         {
             ErrorMsg = "";
             bool result = false;
             SqlTransaction oTransaction = null;
             SqlCommand oCmd = null;
 
-            string errorQuery="";
+            string errorQuery = "";
             try
             {
 
@@ -76,7 +76,7 @@ namespace FIK.DAL
         /// <param name="ExlcudeAutogeneratePrimaryKey"> If database identity property is set then pass the property name for not add to insert query  sample ( Id,Id2)  </param>
         /// <param name="ErrorMsg">if any error occured then provide the output</param>
         /// <returns></returns>
-        public bool Insert<T>(object dataObject,string specificProperty,string ExlcudeAutogeneratePrimaryKey, ref string ErrorMsg)
+        public bool Insert<T>(object dataObject, string specificProperty, string ExlcudeAutogeneratePrimaryKey, string customTable, ref string ErrorMsg)
         {
             bool result = false;
             ErrorMsg = "";
@@ -84,7 +84,7 @@ namespace FIK.DAL
             #region
             PropertyDescriptorCollection props =
                TypeDescriptor.GetProperties(typeof(T));
-           
+
 
             //try to parse list of object data model
             List<T> ListTob = dataObject as List<T>;
@@ -106,6 +106,11 @@ namespace FIK.DAL
 
             #region query generate
             string tableName = ListTob[0].GetType().Name;
+            if (!string.IsNullOrEmpty(customTable))
+            {
+                tableName = customTable;
+            }
+
             StringBuilder queryProperty = new StringBuilder();
             StringBuilder queryValue = new StringBuilder();
 
@@ -113,9 +118,9 @@ namespace FIK.DAL
             {
                 PropertyDescriptor prop = props[i];
 
-                if (!string.IsNullOrEmpty(ExlcudeAutogeneratePrimaryKey) )
+                if (!string.IsNullOrEmpty(ExlcudeAutogeneratePrimaryKey))
                 {
-                    if(ExlcudeAutogeneratePrimaryKey.ToUpper().Contains(prop.Name.ToUpper()) )
+                    if (ExlcudeAutogeneratePrimaryKey.ToUpper().Contains(prop.Name.ToUpper()))
                     {
                         continue;
                     }
@@ -208,13 +213,13 @@ namespace FIK.DAL
             catch (Exception ex)
             {
                 result = false;
-                   ErrorMsg = ex.Message + "\r\n" + dynamicQuery;
-                if(oTransaction != null)
+                ErrorMsg = ex.Message + "\r\n" + dynamicQuery;
+                if (oTransaction != null)
                     oTransaction.Rollback();
             }
             finally
             {
-                if(connection != null)
+                if (connection != null)
                     connection.Close();
             }
 
@@ -236,7 +241,7 @@ namespace FIK.DAL
         /// <param name="WhereClasseParameter"> generate And operation based where simple clause sample ( Id,Id2)  </param>
         /// <param name="ErrorMsg"> if any error occured then provide the output</param>
         /// <returns></returns>
-        public bool Update<T>(object dataObject, string specificProperty, string WhereClasseParameter, ref string ErrorMsg)
+        public bool Update<T>(object dataObject, string specificProperty, string WhereClasseParameter, string customTable, ref string ErrorMsg)
         {
             bool result = false;
             ErrorMsg = "";
@@ -265,6 +270,11 @@ namespace FIK.DAL
 
             #region query generate
             string tableName = ListTob[0].GetType().Name;
+            if (!string.IsNullOrEmpty(customTable))
+            {
+                tableName = customTable;
+            }
+
             StringBuilder queryData = new StringBuilder();
             StringBuilder queryWhereClause = new StringBuilder();
 
@@ -313,7 +323,7 @@ namespace FIK.DAL
 
                         if (updateModifier.Contains("+"))
                         {
-                            queryData.Append("ISNULL(" +prop.Name+",0)");
+                            queryData.Append("ISNULL(" + prop.Name + ",0)");
                             queryData.Append("+");
                         }
                         else if (updateModifier.Contains("-"))
@@ -402,16 +412,16 @@ namespace FIK.DAL
                             {
                                 if (WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
                                 {
-                                    
-                                        oCmd.Parameters.AddWithValue("@" + prop.Name, value);
-                                    
+
+                                    oCmd.Parameters.AddWithValue("@" + prop.Name, value);
+
                                 }
                             }
                             else
                             {
-                               
-                                    oCmd.Parameters.AddWithValue("@" + prop.Name, value);
-                                
+
+                                oCmd.Parameters.AddWithValue("@" + prop.Name, value);
+
                             }
 
 
@@ -420,16 +430,16 @@ namespace FIK.DAL
                         }
 
                         oCmd.Transaction = oTransaction;
-                        rowCount =  oCmd.ExecuteNonQuery();
+                        rowCount = oCmd.ExecuteNonQuery();
                     }
                     oTransaction.Commit();
                     result = true;
-                    if(rowCount <= 0)
+                    if (rowCount <= 0)
                     {
                         result = false;
                         ErrorMsg = "No record found for update";
                     }
-                   
+
 
                 }
             }
@@ -461,7 +471,7 @@ namespace FIK.DAL
         /// <param name="dataObject"> pass a CompositeModel object which can be build by access CompositeModel class </param>
         /// <param name="ErrorMsg"> if any error occured then provide the output</param>
         /// <returns></returns>
-        public bool InsertUpdateComposite(CompositeModel dataObject,  ref string ErrorMsg)
+        public bool InsertUpdateComposite(CompositeModel dataObject, ref string ErrorMsg)
         {
             bool result = false;
             ErrorMsg = "";
@@ -471,13 +481,13 @@ namespace FIK.DAL
 
             #region query generation
 
-            foreach(CompositeModel c in dataObject.GetRecordSet())
+            foreach (CompositeModel c in dataObject.GetRecordSet())
             {
                 PropertyDescriptorCollection props =
                TypeDescriptor.GetProperties(c.ObjectType);
 
                 //var inst = Activator.CreateInstance(c.ObjectType);
-                if(c.Model.Count == 0)
+                if (c.Model.Count == 0)
                 {
                     ErrorMsg = "No object pass to operation";
                     return false;
@@ -501,7 +511,7 @@ namespace FIK.DAL
                         PropertyDescriptor prop = props[i];
 
                         // recrod set update only which is not available in where clause
-                        if (!c.WhereClauseParamForUpdate.ToUpper().Contains(prop.Name.ToUpper()))
+                        if (!c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
                         {
 
                             int index = c.SlectiveProperty.ToUpper().IndexOf(prop.Name.ToUpper());
@@ -516,7 +526,7 @@ namespace FIK.DAL
 
                                 if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
                                 {
-                                    
+
 
                                     queryData.Append(prop.Name);
                                     queryData.Append("=");
@@ -559,9 +569,9 @@ namespace FIK.DAL
                         }
 
 
-                        if (!string.IsNullOrEmpty(c.WhereClauseParamForUpdate))
+                        if (!string.IsNullOrEmpty(c.WhereClauseParamForUpdateDelete))
                         {
-                            if (c.WhereClauseParamForUpdate.ToUpper().Contains(prop.Name.ToUpper()))
+                            if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
                             {
                                 queryWhereClause.Append(prop.Name);
                                 queryWhereClause.Append("=");
@@ -588,11 +598,49 @@ namespace FIK.DAL
 
                     #endregion
 
-                     dynamicQuery = string.Format("update {0} set  {1}  where  ({2}) ", tableName, queryData.ToString(), queryWhereClause.ToString());
+                    dynamicQuery = string.Format("update {0} set  {1}  where  ({2}) ", tableName, queryData.ToString(), queryWhereClause.ToString());
 
                     sqlList.Add(dynamicQuery);
                 }
-                else if(c.OperationMode == OperationMode.Insert)
+                if (c.OperationMode == OperationMode.Delete)
+                {
+
+                    #region query generate
+
+                    for (int i = 0; i < props.Count; i++)
+                    {
+                        PropertyDescriptor prop = props[i];
+
+                        if (string.IsNullOrEmpty(c.WhereClauseParamForUpdateDelete))
+                        {
+                            ErrorMsg = "Where clause not define for delete";
+                            return false;
+                        }
+                        else
+                        {
+                            if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                            {
+                                queryWhereClause.Append(prop.Name);
+                                queryWhereClause.Append("=");
+                                queryWhereClause.Append("@" + prop.Name);
+                                queryWhereClause.Append(" and ");
+                            }
+                        }
+
+                        //oPropertyValue
+                        //table.Columns.Add(prop.Name, prop.PropertyType);
+                    }
+
+                    queryWhereClause.Remove(queryWhereClause.Length - 4, 4);
+
+
+                    #endregion
+
+                    dynamicQuery = string.Format("DELETE from {0}  where  ({1}) ", tableName, queryWhereClause.ToString());
+
+                    sqlList.Add(dynamicQuery);
+                }
+                else if (c.OperationMode == OperationMode.Insert)
                 {
                     #region query generate
 
@@ -641,7 +689,7 @@ namespace FIK.DAL
 
                     #endregion
 
-                     dynamicQuery = string.Format("insert into {0} ( {1} ) values ({2}) ", tableName, queryProperty.ToString(), queryData.ToString());
+                    dynamicQuery = string.Format("insert into {0} ( {1} ) values ({2}) ", tableName, queryProperty.ToString(), queryData.ToString());
 
                     sqlList.Add(dynamicQuery);
                 }
@@ -687,7 +735,7 @@ namespace FIK.DAL
 
                         #region update query
 
-                        if (!c.WhereClauseParamForUpdate.ToUpper().Contains(prop.Name.ToUpper()))
+                        if (!c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
                         {
                             if (!string.IsNullOrEmpty(c.SlectiveProperty))
                             {
@@ -697,7 +745,7 @@ namespace FIK.DAL
                                     string updateModifier = "";
                                     if (index - 1 >= 0)
                                     {
-                                        updateModifier = c.SlectiveProperty.Substring(index - 1, 1);     
+                                        updateModifier = c.SlectiveProperty.Substring(index - 1, 1);
                                     }
 
 
@@ -729,9 +777,9 @@ namespace FIK.DAL
                         }
 
 
-                        if (!string.IsNullOrEmpty(c.WhereClauseParamForUpdate))
+                        if (!string.IsNullOrEmpty(c.WhereClauseParamForUpdateDelete))
                         {
-                            if (c.WhereClauseParamForUpdate.ToUpper().Contains(prop.Name.ToUpper()))
+                            if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
                             {
                                 queryWhereClause.Append(prop.Name);
                                 queryWhereClause.Append("=");
@@ -771,7 +819,7 @@ namespace FIK.DAL
                     string dynamicInsertQuery = string.Format("insert into {0} ( {1} ) values ({2}) ", tableName, queryProperty.ToString(), queryData.ToString());
 
 
-                     dynamicQuery = string.Format(@"
+                    dynamicQuery = string.Format(@"
                                         if exists(select * from {0} where {1} )
                                         begin
                                          {2}
@@ -794,28 +842,22 @@ namespace FIK.DAL
 
 
 
-
-
-
             }
             #endregion
 
-
-            
-
-                SqlTransaction oTransaction = null;
-                SqlCommand oCmd = null;
+            SqlTransaction oTransaction = null;
+            SqlCommand oCmd = null;
 
 
-                    string queryError = "";
+            string queryError = "";
             try
             {
-                    if (connection != null)
-                    {
-                        int rowCount = 0;
+                if (connection != null)
+                {
+                    int rowCount = 0;
 
-                        connection.Open();
-                        oTransaction = connection.BeginTransaction();
+                    connection.Open();
+                    oTransaction = connection.BeginTransaction();
 
                     int index = 0;
                     foreach (CompositeModel c in dataObject.GetRecordSet())
@@ -828,11 +870,22 @@ namespace FIK.DAL
                             oCmd = new SqlCommand(sqlList[index], connection);
                             queryError = sqlList[index];
 
+
+
+
                             for (int i = 0; i < props.Count; i++)
                             {
                                 PropertyDescriptor prop = props[i];
                                 var value = prop.GetValue(obj) == null ? DBNull.Value : prop.GetValue(obj);
 
+                                if (c.OperationMode == OperationMode.Delete)
+                                {
+                                    if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                                    {
+                                        oCmd.Parameters.AddWithValue("@" + prop.Name, value);
+                                    }
+                                    continue;
+                                }
 
                                 if (!string.IsNullOrEmpty(c.SlectiveProperty))
                                 {
@@ -848,7 +901,7 @@ namespace FIK.DAL
                                         oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                         continue;
                                     }
-                                    if (c.WhereClauseParamForUpdate.ToUpper().Contains(prop.Name.ToUpper()))
+                                    if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
                                     {
                                         oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                     }
@@ -871,33 +924,37 @@ namespace FIK.DAL
 
                             oCmd.Transaction = oTransaction;
                             rowCount = oCmd.ExecuteNonQuery();
+                            if (rowCount == 0)
+                            {
+                                throw new Exception("No record affected for " + c.OperationMode.ToString() + "\r\n Query:" + queryError);
+                            }
                         }
                         index++;
 
                     }
                     oTransaction.Commit();
-                        result = true;
-                        if (rowCount <= 0)
-                        {
-                            result = false;
-                            ErrorMsg = "No record found for update";
-                        }
-
-
+                    result = true;
+                    if (rowCount <= 0)
+                    {
+                        result = false;
+                        ErrorMsg = "No record found for update";
                     }
+
+
                 }
-                catch (Exception ex)
-                {
-                    result = false;
-                    ErrorMsg = ex.Message + "\r\n" + queryError;
-                    if (oTransaction != null)
-                        oTransaction.Rollback();
-                }
-                finally
-                {
-                    if (connection != null)
-                        connection.Close();
-                }
+            }
+            catch (Exception ex)
+            {
+                result = false;
+                ErrorMsg = ex.Message + "\r\n" + queryError;
+                if (oTransaction != null)
+                    oTransaction.Rollback();
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
+            }
 
 
 
@@ -912,9 +969,9 @@ namespace FIK.DAL
         /// <param name="SQL"></param>
         /// <param name="msg"> if any error occured then provide the output</param>
         /// <returns>DataTable</returns>
-        public DataTable Select(string SQL,ref string msg)
+        public DataTable Select(string SQL, ref string msg)
         {
-            DataTable dataTable =null;
+            DataTable dataTable = null;
             SqlCommand oCmd = null;
             try
             {
@@ -1006,36 +1063,36 @@ namespace FIK.DAL
             try
             {
                 DataTable dataTable = Select(SQL, ref msg);
-                if (dataTable == null || dataTable.Rows.Count ==0)
+                if (dataTable == null || dataTable.Rows.Count == 0)
                     return null;
 
                 //List<T> list = new List<T>();
 
                 var row = dataTable.Rows[0];
-               
-                    T obj = new T();
 
-                    foreach (var prop in obj.GetType().GetProperties())
+                T obj = new T();
+
+                foreach (var prop in obj.GetType().GetProperties())
+                {
+                    try
                     {
-                        try
-                        {
-                            PropertyInfo propertyInfo = obj.GetType().GetProperty(prop.Name);
+                        PropertyInfo propertyInfo = obj.GetType().GetProperty(prop.Name);
 
-                            var value = row[prop.Name];
-                            if (value == DBNull.Value)
-                            {
-                                value = null;
-                            }
-                            //propertyInfo.SetValue(obj, Convert.ChangeType(row[prop.Name], propertyInfo.PropertyType), null);
-                            prop.SetValue(obj, value, null);
-                        }
-                        catch
+                        var value = row[prop.Name];
+                        if (value == DBNull.Value)
                         {
-                            continue;
+                            value = null;
                         }
+                        //propertyInfo.SetValue(obj, Convert.ChangeType(row[prop.Name], propertyInfo.PropertyType), null);
+                        prop.SetValue(obj, value, null);
                     }
+                    catch
+                    {
+                        continue;
+                    }
+                }
 
-                
+
 
                 return obj;
             }
@@ -1066,7 +1123,7 @@ namespace FIK.DAL
 
             string msg = "";
             DataTable dataTable = Select(selectQuery, ref msg);
-            if(dataTable==null || dataTable.Rows.Count == 0)
+            if (dataTable == null || dataTable.Rows.Count == 0)
             {
                 throw new Exception("Max generation fail, no record ,table or " + msg);
             }

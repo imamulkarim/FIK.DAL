@@ -42,7 +42,7 @@ namespace WindowsForms.Client
             model.MonthlyTutionFee = 2000;
 
             string msg = "";
-            bool r = sqlDal.Insert<Student>(model, "", "id", ref msg);
+            bool r = sqlDal.Insert<Student>(model, "", "id","", ref msg);
 
             if (r)
             {
@@ -62,7 +62,7 @@ namespace WindowsForms.Client
             model.StudentName = "Md. Arman Hossain";
 
             string msg = "";
-            bool r = sqlDal.Insert<Student>(model, "CPGA,StudentName", "id", ref msg);
+            bool r = sqlDal.Insert<Student>(model, "CPGA,StudentName", "id","", ref msg);
 
             if (r)
             {
@@ -106,7 +106,7 @@ namespace WindowsForms.Client
             model.ID = 1;
 
             string msg = "";
-            bool r = sqlDal.Update<Student>(model, "", "id", ref msg);
+            bool r = sqlDal.Update<Student>(model, "", "id","", ref msg);
 
             if (r)
             {
@@ -132,13 +132,20 @@ namespace WindowsForms.Client
                 //model.ID = ; auto generate
                 model.RcvDate = DateTime.Now;
                 model.RcvNo = maxId;
+                model.TestMoney = 20; 
+                model.TestNumeric = 200.5m; 
+
                 listPurchase.Add(model);
 
                 model = new Purchase();
                 model.PrdCode = "1002";
                 model.Qty = 15;
                 //model.ID = ; auto generate
-                model.RcvDate = DateTime.Now;
+
+                //model.RcvDate = DateTime.Now; //for null test 
+                //model.TestMoney = 0; // for null test
+                //model.TestNumeric = 0; // for null test
+
                 model.RcvNo = maxId;
                 listPurchase.Add(model);
             }
