@@ -11,7 +11,7 @@
     <iconUrl>https://github.com/imamulkarim/FIK.DAL</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>A Simple SQL Query Generator Using ADO.NET Provider with SqlClient.</releaseNotes>
+    <releaseNotes> Bug fix where column name have similarity </releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>ADO.NET SqlClient FIK.DAL</tags>
   </metadata>

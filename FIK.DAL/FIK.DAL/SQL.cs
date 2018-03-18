@@ -111,6 +111,8 @@ namespace FIK.DAL
                 tableName = customTable;
             }
 
+            string[] selectiveArray = specificProperty.Split(',');
+
             StringBuilder queryProperty = new StringBuilder();
             StringBuilder queryValue = new StringBuilder();
 
@@ -121,6 +123,7 @@ namespace FIK.DAL
                 if (!string.IsNullOrEmpty(ExlcudeAutogeneratePrimaryKey))
                 {
                     if (ExlcudeAutogeneratePrimaryKey.ToUpper().Contains(prop.Name.ToUpper()))
+                    
                     {
                         continue;
                     }
@@ -128,7 +131,8 @@ namespace FIK.DAL
 
                 if (!string.IsNullOrEmpty(specificProperty))
                 {
-                    if (specificProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                    //if (specificProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                    if (isExist(selectiveArray, prop.Name))
                     {
                         queryProperty.Append(prop.Name);
                         queryProperty.Append(",");
@@ -189,7 +193,8 @@ namespace FIK.DAL
 
                             if (!string.IsNullOrEmpty(specificProperty))
                             {
-                                if (specificProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                //if (specificProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                if (isExist(selectiveArray, prop.Name))
                                 {
                                     oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                 }
@@ -275,6 +280,10 @@ namespace FIK.DAL
                 tableName = customTable;
             }
 
+            string[] selectiveArray = specificProperty.Split(',');
+            string[] WhereArray = WhereClasseParameter.Split(',');
+
+
             StringBuilder queryData = new StringBuilder();
             StringBuilder queryWhereClause = new StringBuilder();
 
@@ -282,19 +291,16 @@ namespace FIK.DAL
             {
                 PropertyDescriptor prop = props[i];
 
-                int index = specificProperty.ToUpper().IndexOf(prop.Name.ToUpper());
-                string updateModifier = "";
-                if (index - 1 >= 0)
-                {
-                    updateModifier = specificProperty.Substring(index - 1, 1);
-                }
+                string updateModifier = GetUpdateModifier(selectiveArray, prop.Name);
 
                 // recrod set update only which is not available in where clause
-                if (!WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
+                //if (!WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
+                if (!isExist(WhereArray, prop.Name))
                 {
                     if (!string.IsNullOrEmpty(specificProperty))
                     {
-                        if (specificProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                        //if (specificProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                        if (!isExist(selectiveArray, prop.Name))
                         {
                             queryData.Append(prop.Name);
                             queryData.Append("=");
@@ -341,7 +347,8 @@ namespace FIK.DAL
 
                 if (!string.IsNullOrEmpty(WhereClasseParameter))
                 {
-                    if (WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
+                    //if (WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
+                    if (isExist(WhereArray, prop.Name))
                     {
                         queryWhereClause.Append(prop.Name);
                         queryWhereClause.Append("=");
@@ -393,11 +400,13 @@ namespace FIK.DAL
                             var value = prop.GetValue(obj) == null ? DBNull.Value : prop.GetValue(obj);
 
 
-                            if (!WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
+                            //if (!WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
+                            if (!isExist(WhereArray, prop.Name))
                             {
                                 if (!string.IsNullOrEmpty(specificProperty))
                                 {
-                                    if (specificProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                    //if (specificProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                    if (isExist(selectiveArray, prop.Name))
                                     {
                                         oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                     }
@@ -410,7 +419,8 @@ namespace FIK.DAL
 
                             if (!string.IsNullOrEmpty(WhereClasseParameter))
                             {
-                                if (WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
+                                //if (WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
+                                if (isExist(WhereArray, prop.Name))
                                 {
 
                                     oCmd.Parameters.AddWithValue("@" + prop.Name, value);
@@ -500,6 +510,9 @@ namespace FIK.DAL
                 StringBuilder queryProperty = new StringBuilder();
                 StringBuilder queryData2 = new StringBuilder();
 
+                string[] selectiveArray = c.SlectiveProperty.Split(',');
+                string[] WhereArray = c.WhereClauseParamForUpdateDelete.Split(',');
+
                 string dynamicQuery = "";
                 if (c.OperationMode == OperationMode.Update)
                 {
@@ -511,20 +524,17 @@ namespace FIK.DAL
                         PropertyDescriptor prop = props[i];
 
                         // recrod set update only which is not available in where clause
-                        if (!c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                        //if (!c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                        if(!isExist(WhereArray, prop.Name))
                         {
 
-                            int index = c.SlectiveProperty.ToUpper().IndexOf(prop.Name.ToUpper());
-                            string updateModifier = "";
-                            if (index - 1 >= 0)
-                            {
-                                updateModifier = c.SlectiveProperty.Substring(index - 1, 1);
-                            }
+                            string updateModifier = GetUpdateModifier(selectiveArray, prop.Name);
 
                             if (!string.IsNullOrEmpty(c.SlectiveProperty))
                             {
 
-                                if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                if (isExist(selectiveArray, prop.Name))
                                 {
 
 
@@ -571,7 +581,8 @@ namespace FIK.DAL
 
                         if (!string.IsNullOrEmpty(c.WhereClauseParamForUpdateDelete))
                         {
-                            if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                            //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                            if (isExist(WhereArray, prop.Name))
                             {
                                 queryWhereClause.Append(prop.Name);
                                 queryWhereClause.Append("=");
@@ -618,7 +629,8 @@ namespace FIK.DAL
                         }
                         else
                         {
-                            if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                            //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                            if (isExist(WhereArray, prop.Name))
                             {
                                 queryWhereClause.Append(prop.Name);
                                 queryWhereClause.Append("=");
@@ -659,7 +671,8 @@ namespace FIK.DAL
 
                         if (!string.IsNullOrEmpty(c.SlectiveProperty))
                         {
-                            if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                            //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                            if (isExist(selectiveArray, prop.Name))
                             {
                                 queryProperty.Append(prop.Name);
                                 queryProperty.Append(",");
@@ -713,7 +726,8 @@ namespace FIK.DAL
 
                         if (!string.IsNullOrEmpty(c.SlectiveProperty))
                         {
-                            if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                            //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                            if (isExist(selectiveArray, prop.Name))
                             {
                                 queryProperty.Append(prop.Name);
                                 queryProperty.Append(",");
@@ -735,19 +749,15 @@ namespace FIK.DAL
 
                         #region update query
 
-                        if (!c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                        //if (!c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                        if (!isExist(WhereArray, prop.Name))
                         {
                             if (!string.IsNullOrEmpty(c.SlectiveProperty))
                             {
-                                if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                if (isExist(selectiveArray, prop.Name))
                                 {
-                                    int index = c.SlectiveProperty.ToUpper().IndexOf(prop.Name.ToUpper());
-                                    string updateModifier = "";
-                                    if (index - 1 >= 0)
-                                    {
-                                        updateModifier = c.SlectiveProperty.Substring(index - 1, 1);
-                                    }
-
+                                    string updateModifier = GetUpdateModifier(selectiveArray,prop.Name);
 
                                     queryData2.Append(prop.Name);
                                     queryData2.Append("=");
@@ -779,7 +789,8 @@ namespace FIK.DAL
 
                         if (!string.IsNullOrEmpty(c.WhereClauseParamForUpdateDelete))
                         {
-                            if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                            //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                            if (isExist(WhereArray, prop.Name))
                             {
                                 queryWhereClause.Append(prop.Name);
                                 queryWhereClause.Append("=");
@@ -865,6 +876,9 @@ namespace FIK.DAL
                         PropertyDescriptorCollection props =
                        TypeDescriptor.GetProperties(c.ObjectType);
 
+                        string[] selectiveArray = c.SlectiveProperty.Split(',');
+                        string[] WhereArray = c.WhereClauseParamForUpdateDelete.Split(',');
+
                         foreach (object obj in c.Model)
                         {
                             oCmd = new SqlCommand(sqlList[index], connection);
@@ -880,7 +894,8 @@ namespace FIK.DAL
 
                                 if (c.OperationMode == OperationMode.Delete)
                                 {
-                                    if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                                    //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                                    if (isExist(WhereArray, prop.Name))
                                     {
                                         oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                     }
@@ -896,12 +911,14 @@ namespace FIK.DAL
                                             continue;
                                         }
                                     }
-                                    if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                    //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                    if (isExist(selectiveArray, prop.Name))
                                     {
                                         oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                         continue;
                                     }
-                                    if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                                    //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                                    if (isExist(WhereArray, prop.Name))
                                     {
                                         oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                     }
@@ -960,6 +977,54 @@ namespace FIK.DAL
 
 
             return result;
+        }
+
+
+        private bool isExist(string[] source , string target)
+        {
+            target = target.ToUpper();
+
+            string[] source2 = new string[source.Length];
+
+            for (int i = 0; i < source.Length; i++)
+            {
+                if (source[i].StartsWith("+") || source[i].StartsWith("-"))
+                {
+                    source2[i] = source[i].Substring(1, source[i].Length-1);
+                }else
+                {
+                    source2[i] = source[i];
+                }
+            }
+
+            string result = source2.FirstOrDefault(s => s.ToUpper() == target);
+            if (!string.IsNullOrEmpty(result))
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        private string GetUpdateModifier(string[] source, string target)
+        {
+            target = target.ToUpper();
+
+            for (int i = 0; i < source.Length; i++)
+            {
+                if (source[i].StartsWith("+") || source[i].StartsWith("-"))
+                {
+                    string s = source[i].Substring(1, source[i].Length-1);
+
+                    if(s.ToUpper() == target.ToUpper())
+                    {
+                        return source[i].Substring(0, 1);
+                    }
+                }
+            }
+
+            return "";
+           
         }
 
 
