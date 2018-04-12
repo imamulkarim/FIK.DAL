@@ -120,6 +120,11 @@ namespace FIK.DAL
             {
                 PropertyDescriptor prop = props[i];
 
+                if (!AllowedProperty(prop))
+                {
+                    continue;
+                }
+
                 if (!string.IsNullOrEmpty(ExlcudeAutogeneratePrimaryKey))
                 {
                     if (ExlcudeAutogeneratePrimaryKey.ToUpper().Contains(prop.Name.ToUpper()))
@@ -181,6 +186,11 @@ namespace FIK.DAL
                         {
                             PropertyDescriptor prop = props[i];
 
+                            if (!AllowedProperty(prop))
+                            {
+                                continue;
+                            }
+
                             var value = prop.GetValue(obj) == null ? DBNull.Value : prop.GetValue(obj);
 
                             if (!string.IsNullOrEmpty(ExlcudeAutogeneratePrimaryKey))
@@ -235,6 +245,171 @@ namespace FIK.DAL
             return result;
         }
 
+        /// <summary>
+        /// Geneerate update query based on Model passed as parameter ,where clause paramater data not used for update
+        /// using SqlCommand  Parameter add , sql injection not possible
+        /// </summary>
+        /// <param name="dataObject"> pass a single object or list of object </param>
+        /// <param name="specificProperty"> when need only some specific property to insert sample ( Id,Name,Amount, +Qty ) , for update if existing data need to increment or decrement then use + or - </param>
+        /// <param name="WhereClasseParameter"> generate And operation based where simple clause sample ( Id,Id2)  </param>
+        /// <param name="ErrorMsg"> if any error occured then provide the output</param>
+        /// <returns></returns>
+        public bool Delete<T>(object dataObject, string WhereClasseParameter, string customTable, ref string ErrorMsg)
+        {
+            bool result = false;
+            ErrorMsg = "";
+
+            #region
+            PropertyDescriptorCollection props =
+               TypeDescriptor.GetProperties(typeof(T));
+
+            //try to parse list of object data model
+            List<T> ListTob = dataObject as List<T>;
+            if (ListTob == null)
+            {
+                ListTob = new List<T>();
+
+                //try to parse single data model
+                T Tob = (T)dataObject;
+                if (Tob == null)
+                {
+                    result = false;
+                    ErrorMsg = "Invalid Object";
+                    return result;
+                }
+
+                ListTob.Add(Tob);
+            }
+
+            #region query generate
+            string tableName = ListTob[0].GetType().Name;
+            if (!string.IsNullOrEmpty(customTable))
+            {
+                tableName = customTable;
+            }
+
+            
+            string[] WhereArray = WhereClasseParameter.Split(',');
+
+
+            StringBuilder queryWhereClause = new StringBuilder();
+
+            for (int i = 0; i < props.Count; i++)
+            {
+                PropertyDescriptor prop = props[i];
+                if (!AllowedProperty(prop))
+                {
+                    continue;
+                }
+                
+
+                // recrod set update only which is not available in where clause
+                //if (!WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
+                
+
+
+                if (!string.IsNullOrEmpty(WhereClasseParameter))
+                {
+                    //if (WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
+                    if (isExist(WhereArray, prop.Name))
+                    {
+                        queryWhereClause.Append(prop.Name);
+                        queryWhereClause.Append("=");
+                        queryWhereClause.Append("@" + prop.Name);
+                        queryWhereClause.Append(" and ");
+
+                    }
+                }
+                else
+                {
+                    ErrorMsg = "Where parameter must be provided";
+                    return false;
+                }
+
+                //oPropertyValue
+                //table.Columns.Add(prop.Name, prop.PropertyType);
+            }
+
+            queryWhereClause.Remove(queryWhereClause.Length - 4, 4);
+
+
+            #endregion
+
+            string dynamicQuery = string.Format("delete from {0}  where  ({1}) ", tableName, queryWhereClause.ToString());
+
+
+            SqlTransaction oTransaction = null;
+            SqlCommand oCmd = null;
+
+            try
+            {
+                if (connection != null)
+                {
+                    int rowCount = 0;
+
+                    connection.Open();
+                    oTransaction = connection.BeginTransaction();
+                    foreach (T obj in ListTob)
+                    {
+                        oCmd = new SqlCommand(dynamicQuery, connection);
+
+                        for (int i = 0; i < props.Count; i++)
+                        {
+                            PropertyDescriptor prop = props[i];
+                            if (!AllowedProperty(prop))
+                            {
+                                continue;
+                            }
+                            var value = prop.GetValue(obj) == null ? DBNull.Value : prop.GetValue(obj);
+
+
+                           
+                            //if (WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
+                            if (isExist(WhereArray, prop.Name))
+                            {
+
+                                oCmd.Parameters.AddWithValue("@" + prop.Name, value);
+
+                            }
+                            
+
+                            //oPropertyValue
+                            //table.Columns.Add(prop.Name, prop.PropertyType);
+                        }
+
+                        oCmd.Transaction = oTransaction;
+                        rowCount = oCmd.ExecuteNonQuery();
+                    }
+                    oTransaction.Commit();
+                    result = true;
+                    if (rowCount <= 0)
+                    {
+                        result = false;
+                        ErrorMsg = "No record found for delete";
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                result = false;
+                ErrorMsg = ex.Message + "\r\n" + dynamicQuery;
+                if (oTransaction != null)
+                    oTransaction.Rollback();
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
+            }
+
+
+            #endregion
+
+
+            return result;
+        }
 
 
         /// <summary>
@@ -290,7 +465,10 @@ namespace FIK.DAL
             for (int i = 0; i < props.Count; i++)
             {
                 PropertyDescriptor prop = props[i];
-
+                if (!AllowedProperty(prop))
+                {
+                    continue;
+                }
                 string updateModifier = GetUpdateModifier(selectiveArray, prop.Name);
 
                 // recrod set update only which is not available in where clause
@@ -396,7 +574,10 @@ namespace FIK.DAL
                         for (int i = 0; i < props.Count; i++)
                         {
                             PropertyDescriptor prop = props[i];
-
+                            if (!AllowedProperty(prop))
+                            {
+                                continue;
+                            }
                             var value = prop.GetValue(obj) == null ? DBNull.Value : prop.GetValue(obj);
 
 
@@ -523,9 +704,14 @@ namespace FIK.DAL
                     {
                         PropertyDescriptor prop = props[i];
 
+                        if (!AllowedProperty(prop))
+                        {
+                            continue;
+                        }
+
                         // recrod set update only which is not available in where clause
                         //if (!c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
-                        if(!isExist(WhereArray, prop.Name))
+                        if (!isExist(WhereArray, prop.Name))
                         {
 
                             string updateModifier = GetUpdateModifier(selectiveArray, prop.Name);
@@ -660,6 +846,12 @@ namespace FIK.DAL
                     {
                         PropertyDescriptor prop = props[i];
 
+                        
+
+                        if (!AllowedProperty(prop))
+                        {
+                            continue;
+                        }
 
                         if (!string.IsNullOrEmpty(c.ExlcudeAutogeneratePrimaryKey))
                         {
@@ -714,6 +906,11 @@ namespace FIK.DAL
                     for (int i = 0; i < props.Count; i++)
                     {
                         PropertyDescriptor prop = props[i];
+
+                        if (!AllowedProperty(prop))
+                        {
+                            continue;
+                        }
 
                         #region insert query
                         if (!string.IsNullOrEmpty(c.ExlcudeAutogeneratePrimaryKey))
@@ -890,6 +1087,12 @@ namespace FIK.DAL
                             for (int i = 0; i < props.Count; i++)
                             {
                                 PropertyDescriptor prop = props[i];
+
+                                if (!AllowedProperty(prop))
+                                {
+                                    continue;
+                                }
+
                                 var value = prop.GetValue(obj) == null ? DBNull.Value : prop.GetValue(obj);
 
                                 if (c.OperationMode == OperationMode.Delete)
@@ -979,6 +1182,41 @@ namespace FIK.DAL
             return result;
         }
 
+        private bool AllowedProperty(PropertyDescriptor prop)
+        {
+            bool r = false;
+            if(prop.PropertyType == typeof(int) ||
+                prop.PropertyType == typeof(int?) ||
+                prop.PropertyType == typeof(decimal) ||
+                prop.PropertyType == typeof(decimal?) ||
+                prop.PropertyType == typeof(float) ||
+                prop.PropertyType == typeof(float?) ||
+                prop.PropertyType == typeof(string) ||
+                prop.PropertyType == typeof(String) ||
+                prop.PropertyType == typeof(byte[]) ||
+                prop.PropertyType == typeof(byte) ||
+                prop.PropertyType == typeof(byte?) ||
+                prop.PropertyType == typeof(Byte) ||
+                prop.PropertyType == typeof(Byte?) ||
+                prop.PropertyType == typeof(char) ||
+                prop.PropertyType == typeof(DateTime) ||
+                prop.PropertyType == typeof(DateTime?) ||
+                prop.PropertyType == typeof(TimeSpan?) ||
+                prop.PropertyType == typeof(TimeSpan) )
+            {
+                 r = true;
+            }
+
+            foreach (var d in prop.Attributes)
+            {
+                if (d.GetType() == typeof(FIK_NoCUDAttribute))
+                {
+                    r = false;
+                }
+            }
+
+            return r;
+        }
 
         private bool isExist(string[] source , string target)
         {

@@ -45,11 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompositeModel.cs" />
+    <Compile Include="FIK_NoCUDAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQL.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="nuget put command.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

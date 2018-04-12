@@ -42,6 +42,7 @@
             this.btnLoadStockAndRcv = new System.Windows.Forms.Button();
             this.dgvPurchase = new System.Windows.Forms.DataGridView();
             this.dgvStock = new System.Windows.Forms.DataGridView();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentData)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -110,6 +111,7 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.btnSingleAll);
             this.panel1.Controls.Add(this.btnSingleSelective);
@@ -192,6 +194,16 @@
             this.dgvStock.Size = new System.Drawing.Size(404, 239);
             this.dgvStock.TabIndex = 6;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(214, 147);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(152, 90);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "Delete Single Data";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // MainFormForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -228,6 +240,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button button1;
     }
 }
 

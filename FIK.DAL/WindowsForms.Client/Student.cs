@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FIK.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +17,7 @@ namespace WindowsForms.Client
         public byte[] StudentImage { get; set; }
         public decimal MonthlyTutionFee { get; set; }
         public TimeSpan LastPresentTime { get; set; }
+
+       
     }
 }

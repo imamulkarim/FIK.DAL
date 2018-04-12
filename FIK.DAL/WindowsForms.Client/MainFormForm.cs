@@ -221,6 +221,25 @@ namespace WindowsForms.Client
         {
 
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Student model = new Student();
+            model.ID = 1;
+            
+
+            string msg = "";
+            bool r = sqlDal.Delete<Student>(model, "id", "", ref msg);
+
+            if (r)
+            {
+                MessageBox.Show("Success");
+            }
+            else
+            {
+                MessageBox.Show(msg);
+            }
+        }
     }
 
 

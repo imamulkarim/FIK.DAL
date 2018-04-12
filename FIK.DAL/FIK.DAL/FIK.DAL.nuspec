@@ -11,7 +11,7 @@
     <iconUrl>https://github.com/imamulkarim/FIK.DAL</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes> Bug fix where column name have similarity </releaseNotes>
+    <releaseNotes> Columns exclude option and only specific property target </releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>ADO.NET SqlClient FIK.DAL</tags>
   </metadata>
