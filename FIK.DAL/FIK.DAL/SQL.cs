@@ -139,7 +139,7 @@ namespace FIK.DAL
                     //if (specificProperty.ToUpper().Contains(prop.Name.ToUpper()))
                     if (isExist(selectiveArray, prop.Name))
                     {
-                        queryProperty.Append(prop.Name);
+                        queryProperty.Append("[" + prop.Name + "]");
                         queryProperty.Append(",");
 
                         queryValue.Append("@" + prop.Name);
@@ -148,7 +148,7 @@ namespace FIK.DAL
                 }
                 else
                 {
-                    queryProperty.Append(prop.Name);
+                    queryProperty.Append("[" + prop.Name + "]");
                     queryProperty.Append(",");
 
                     queryValue.Append("@" + prop.Name);
@@ -166,7 +166,7 @@ namespace FIK.DAL
 
             #endregion
 
-            string dynamicQuery = string.Format("insert into {0} ( {1} ) values ({2}) ", tableName, queryProperty.ToString(), queryValue.ToString());
+            string dynamicQuery = string.Format("insert into [{0}] ( {1} ) values ({2}) ", tableName, queryProperty.ToString(), queryValue.ToString());
 
 
             SqlTransaction oTransaction = null;
@@ -313,7 +313,7 @@ namespace FIK.DAL
                     //if (WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
                     if (isExist(WhereArray, prop.Name))
                     {
-                        queryWhereClause.Append(prop.Name);
+                        queryWhereClause.Append("[" + prop.Name + "]");
                         queryWhereClause.Append("=");
                         queryWhereClause.Append("@" + prop.Name);
                         queryWhereClause.Append(" and ");
@@ -335,7 +335,7 @@ namespace FIK.DAL
 
             #endregion
 
-            string dynamicQuery = string.Format("delete from {0}  where  ({1}) ", tableName, queryWhereClause.ToString());
+            string dynamicQuery = string.Format("delete from [{0}]  where  ({1}) ", tableName, queryWhereClause.ToString());
 
 
             SqlTransaction oTransaction = null;
@@ -478,9 +478,9 @@ namespace FIK.DAL
                     if (!string.IsNullOrEmpty(specificProperty))
                     {
                         //if (specificProperty.ToUpper().Contains(prop.Name.ToUpper()))
-                        if (!isExist(selectiveArray, prop.Name))
+                        if (isExist(selectiveArray, prop.Name))
                         {
-                            queryData.Append(prop.Name);
+                            queryData.Append("[" + prop.Name + "]");
                             queryData.Append("=");
 
                             if (updateModifier.Contains("+"))
@@ -502,7 +502,7 @@ namespace FIK.DAL
                     }
                     else
                     {
-                        queryData.Append(prop.Name);
+                        queryData.Append("[" + prop.Name + "]");
                         queryData.Append("=");
 
                         if (updateModifier.Contains("+"))
@@ -528,7 +528,7 @@ namespace FIK.DAL
                     //if (WhereClasseParameter.ToUpper().Contains(prop.Name.ToUpper()))
                     if (isExist(WhereArray, prop.Name))
                     {
-                        queryWhereClause.Append(prop.Name);
+                        queryWhereClause.Append("[" + prop.Name + "]");
                         queryWhereClause.Append("=");
                         queryWhereClause.Append("@" + prop.Name);
                         queryWhereClause.Append(" and ");
@@ -537,7 +537,7 @@ namespace FIK.DAL
                 }
                 else
                 {
-                    queryWhereClause.Append(prop.Name);
+                    queryWhereClause.Append("[" + prop.Name + "]");
                     queryWhereClause.Append("=");
                     queryWhereClause.Append("@" + prop.Name);
                     queryWhereClause.Append(" and ");
@@ -553,7 +553,7 @@ namespace FIK.DAL
 
             #endregion
 
-            string dynamicQuery = string.Format("update {0} set  {1}  where  ({2}) ", tableName, queryData.ToString(), queryWhereClause.ToString());
+            string dynamicQuery = string.Format("update [{0}] set  {1}  where  ({2}) ", tableName, queryData.ToString(), queryWhereClause.ToString());
 
 
             SqlTransaction oTransaction = null;
@@ -692,6 +692,11 @@ namespace FIK.DAL
                 StringBuilder queryData2 = new StringBuilder();
 
                 string[] selectiveArray = c.SlectiveProperty.Split(',');
+                if (string.IsNullOrEmpty(c.SlectivePropertyUpdate))
+                {
+                    c.SlectivePropertyUpdate = "";
+                }
+                string[] selectiveArrayUpdate = c.SlectivePropertyUpdate.Split(',');
                 string[] WhereArray = c.WhereClauseParamForUpdateDelete.Split(',');
 
                 string dynamicQuery = "";
@@ -724,7 +729,7 @@ namespace FIK.DAL
                                 {
 
 
-                                    queryData.Append(prop.Name);
+                                    queryData.Append("[" + prop.Name + "]");
                                     queryData.Append("=");
 
                                     if (updateModifier.Contains("+"))
@@ -745,7 +750,7 @@ namespace FIK.DAL
                             }
                             else
                             {
-                                queryData.Append(prop.Name);
+                                queryData.Append("["+prop.Name+"]");
                                 queryData.Append("=");
 
                                 if (updateModifier.Contains("+"))
@@ -770,7 +775,7 @@ namespace FIK.DAL
                             //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
                             if (isExist(WhereArray, prop.Name))
                             {
-                                queryWhereClause.Append(prop.Name);
+                                queryWhereClause.Append("[" + prop.Name + "]");
                                 queryWhereClause.Append("=");
                                 queryWhereClause.Append("@" + prop.Name);
                                 queryWhereClause.Append(" and ");
@@ -779,7 +784,7 @@ namespace FIK.DAL
                         }
                         else
                         {
-                            queryWhereClause.Append(prop.Name);
+                            queryWhereClause.Append("[" + prop.Name + "]");
                             queryWhereClause.Append("=");
                             queryWhereClause.Append("@" + prop.Name);
                             queryWhereClause.Append(" and ");
@@ -795,7 +800,7 @@ namespace FIK.DAL
 
                     #endregion
 
-                    dynamicQuery = string.Format("update {0} set  {1}  where  ({2}) ", tableName, queryData.ToString(), queryWhereClause.ToString());
+                    dynamicQuery = string.Format("update [{0}] set  {1}  where  ({2}) ", tableName, queryData.ToString(), queryWhereClause.ToString());
 
                     sqlList.Add(dynamicQuery);
                 }
@@ -818,7 +823,7 @@ namespace FIK.DAL
                             //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
                             if (isExist(WhereArray, prop.Name))
                             {
-                                queryWhereClause.Append(prop.Name);
+                                queryWhereClause.Append("[" + prop.Name + "]");
                                 queryWhereClause.Append("=");
                                 queryWhereClause.Append("@" + prop.Name);
                                 queryWhereClause.Append(" and ");
@@ -834,7 +839,7 @@ namespace FIK.DAL
 
                     #endregion
 
-                    dynamicQuery = string.Format("DELETE from {0}  where  ({1}) ", tableName, queryWhereClause.ToString());
+                    dynamicQuery = string.Format("DELETE from [{0}]  where  ({1}) ", tableName, queryWhereClause.ToString());
 
                     sqlList.Add(dynamicQuery);
                 }
@@ -866,7 +871,7 @@ namespace FIK.DAL
                             //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
                             if (isExist(selectiveArray, prop.Name))
                             {
-                                queryProperty.Append(prop.Name);
+                                queryProperty.Append("[" + prop.Name + "]");
                                 queryProperty.Append(",");
 
                                 queryData.Append("@" + prop.Name);
@@ -875,7 +880,7 @@ namespace FIK.DAL
                         }
                         else
                         {
-                            queryProperty.Append(prop.Name);
+                            queryProperty.Append("[" + prop.Name + "]");
                             queryProperty.Append(",");
 
                             queryData.Append("@" + prop.Name);
@@ -894,141 +899,267 @@ namespace FIK.DAL
 
                     #endregion
 
-                    dynamicQuery = string.Format("insert into {0} ( {1} ) values ({2}) ", tableName, queryProperty.ToString(), queryData.ToString());
+                    dynamicQuery = string.Format("insert into [{0}] ( {1} ) values ({2}) ", tableName, queryProperty.ToString(), queryData.ToString());
 
                     sqlList.Add(dynamicQuery);
                 }
                 else if (c.OperationMode == OperationMode.InsertOrUpdaet)
                 {
-
-                    #region query generate
-
-                    for (int i = 0; i < props.Count; i++)
+                    // same selective property used for both update and insert
+                    if (string.IsNullOrEmpty(c.SlectivePropertyUpdate))
                     {
-                        PropertyDescriptor prop = props[i];
+                        #region query generate
 
-                        if (!AllowedProperty(prop))
+                        for (int i = 0; i < props.Count; i++)
                         {
-                            continue;
-                        }
+                            PropertyDescriptor prop = props[i];
 
-                        #region insert query
-                        if (!string.IsNullOrEmpty(c.ExlcudeAutogeneratePrimaryKey))
-                        {
-                            if (c.ExlcudeAutogeneratePrimaryKey.ToUpper().Contains(prop.Name.ToUpper()))
+                            if (!AllowedProperty(prop))
                             {
                                 continue;
                             }
-                        }
 
-                        if (!string.IsNullOrEmpty(c.SlectiveProperty))
-                        {
-                            //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
-                            if (isExist(selectiveArray, prop.Name))
+                            #region insert query
+                            if (!string.IsNullOrEmpty(c.ExlcudeAutogeneratePrimaryKey))
                             {
-                                queryProperty.Append(prop.Name);
-                                queryProperty.Append(",");
-
-                                queryData.Append("@" + prop.Name);
-                                queryData.Append(",");
+                                if (c.ExlcudeAutogeneratePrimaryKey.ToUpper().Contains(prop.Name.ToUpper()))
+                                {
+                                    continue;
+                                }
                             }
-                        }
-                        else
-                        {
-                            queryProperty.Append(prop.Name);
-                            queryProperty.Append(",");
 
-                            queryData.Append("@" + prop.Name);
-                            queryData.Append(",");
-                        }
-
-                        #endregion
-
-                        #region update query
-
-                        //if (!c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
-                        if (!isExist(WhereArray, prop.Name))
-                        {
                             if (!string.IsNullOrEmpty(c.SlectiveProperty))
                             {
                                 //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
                                 if (isExist(selectiveArray, prop.Name))
                                 {
-                                    string updateModifier = GetUpdateModifier(selectiveArray,prop.Name);
+                                    queryProperty.Append("[" + prop.Name + "]");
+                                    queryProperty.Append(",");
 
-                                    queryData2.Append(prop.Name);
+                                    queryData.Append("@" + prop.Name);
+                                    queryData.Append(",");
+                                }
+                            }
+                            else
+                            {
+                                queryProperty.Append("[" + prop.Name + "]");
+                                queryProperty.Append(",");
+
+                                queryData.Append("@" + prop.Name);
+                                queryData.Append(",");
+                            }
+
+                            #endregion
+
+                            #region update query
+
+                            //if (!c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                            if (!isExist(WhereArray, prop.Name))
+                            {
+                                if (!string.IsNullOrEmpty(c.SlectiveProperty))
+                                {
+                                    //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                    if (isExist(selectiveArray, prop.Name))
+                                    {
+                                        string updateModifier = GetUpdateModifier(selectiveArray, prop.Name);
+
+                                        queryData2.Append("[" + prop.Name + "]");
+                                        queryData2.Append("=");
+                                        if (updateModifier.Contains("+"))
+                                        {
+                                            queryData2.Append("ISNULL(" + prop.Name + ",0)");
+                                            queryData2.Append("+");
+                                        }
+                                        else if (updateModifier.Contains("-"))
+                                        {
+                                            queryData2.Append("ISNULL(" + prop.Name + ",0)");
+                                            queryData2.Append("+");
+                                        }
+
+                                        queryData2.Append("@" + prop.Name);
+                                        queryData2.Append(",");
+
+                                    }
+                                }
+                                else
+                                {
+                                    queryData2.Append("[" + prop.Name + "]");
                                     queryData2.Append("=");
-                                    if (updateModifier.Contains("+"))
-                                    {
-                                        queryData2.Append("ISNULL(" + prop.Name + ",0)");
-                                        queryData2.Append("+");
-                                    }
-                                    else if (updateModifier.Contains("-"))
-                                    {
-                                        queryData2.Append("ISNULL(" + prop.Name + ",0)");
-                                        queryData2.Append("+");
-                                    }
-
                                     queryData2.Append("@" + prop.Name);
                                     queryData2.Append(",");
+                                }
+                            }
+
+
+                            if (!string.IsNullOrEmpty(c.WhereClauseParamForUpdateDelete))
+                            {
+                                //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                                if (isExist(WhereArray, prop.Name))
+                                {
+                                    queryWhereClause.Append("[" + prop.Name + "]");
+                                    queryWhereClause.Append("=");
+                                    queryWhereClause.Append("@" + prop.Name);
+                                    queryWhereClause.Append(" and ");
 
                                 }
                             }
                             else
                             {
-                                queryData2.Append(prop.Name);
-                                queryData2.Append("=");
-                                queryData2.Append("@" + prop.Name);
-                                queryData2.Append(",");
-                            }
-                        }
-
-
-                        if (!string.IsNullOrEmpty(c.WhereClauseParamForUpdateDelete))
-                        {
-                            //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
-                            if (isExist(WhereArray, prop.Name))
-                            {
-                                queryWhereClause.Append(prop.Name);
+                                queryWhereClause.Append("[" + prop.Name + "]");
                                 queryWhereClause.Append("=");
                                 queryWhereClause.Append("@" + prop.Name);
                                 queryWhereClause.Append(" and ");
-
                             }
-                        }
-                        else
-                        {
-                            queryWhereClause.Append(prop.Name);
-                            queryWhereClause.Append("=");
-                            queryWhereClause.Append("@" + prop.Name);
-                            queryWhereClause.Append(" and ");
+
+
+
+                            #endregion
+
+
+                            //oPropertyValue
+                            //table.Columns.Add(prop.Name, prop.PropertyType);
                         }
 
+                        queryData2.Remove(queryData2.Length - 1, 1);
+                        queryWhereClause.Remove(queryWhereClause.Length - 4, 4);
+
+                        queryProperty.Remove(queryProperty.Length - 1, 1);
+                        queryData.Remove(queryData.Length - 1, 1);
 
 
                         #endregion
+                    }else
+                    {
+                        // different selective property used for both update and insert
+                        #region query generate
+
+                        for (int i = 0; i < props.Count; i++)
+                        {
+                            PropertyDescriptor prop = props[i];
+
+                            if (!AllowedProperty(prop))
+                            {
+                                continue;
+                            }
+
+                            #region insert query
+                            if (!string.IsNullOrEmpty(c.ExlcudeAutogeneratePrimaryKey))
+                            {
+                                if (c.ExlcudeAutogeneratePrimaryKey.ToUpper().Contains(prop.Name.ToUpper()))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            if (!string.IsNullOrEmpty(c.SlectiveProperty))
+                            {
+                                //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                if (isExist(selectiveArray, prop.Name))
+                                {
+                                    queryProperty.Append("[" + prop.Name + "]");
+                                    queryProperty.Append(",");
+
+                                    queryData.Append("@" + prop.Name);
+                                    queryData.Append(",");
+                                }
+                            }
+                            else
+                            {
+                                queryProperty.Append("[" + prop.Name + "]");
+                                queryProperty.Append(",");
+
+                                queryData.Append("@" + prop.Name);
+                                queryData.Append(",");
+                            }
+
+                            #endregion
+
+                            #region update query
+
+                            //if (!c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                            if (!isExist(WhereArray, prop.Name))
+                            {
+                                if (!string.IsNullOrEmpty(c.SlectivePropertyUpdate))
+                                {
+                                    //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                    if (isExist(selectiveArrayUpdate, prop.Name))
+                                    {
+                                        string updateModifier = GetUpdateModifier(selectiveArrayUpdate, prop.Name);
+
+                                        queryData2.Append("[" + prop.Name + "]");
+                                        queryData2.Append("=");
+                                        if (updateModifier.Contains("+"))
+                                        {
+                                            queryData2.Append("ISNULL(" + prop.Name + ",0)");
+                                            queryData2.Append("+");
+                                        }
+                                        else if (updateModifier.Contains("-"))
+                                        {
+                                            queryData2.Append("ISNULL(" + prop.Name + ",0)");
+                                            queryData2.Append("+");
+                                        }
+
+                                        queryData2.Append("@" + prop.Name);
+                                        queryData2.Append(",");
+
+                                    }
+                                }
+                                else
+                                {
+                                    queryData2.Append("[" + prop.Name + "]");
+                                    queryData2.Append("=");
+                                    queryData2.Append("@" + prop.Name);
+                                    queryData2.Append(",");
+                                }
+                            }
 
 
-                        //oPropertyValue
-                        //table.Columns.Add(prop.Name, prop.PropertyType);
+                            if (!string.IsNullOrEmpty(c.WhereClauseParamForUpdateDelete))
+                            {
+                                //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                                if (isExist(WhereArray, prop.Name))
+                                {
+                                    queryWhereClause.Append("[" + prop.Name + "]");
+                                    queryWhereClause.Append("=");
+                                    queryWhereClause.Append("@" + prop.Name);
+                                    queryWhereClause.Append(" and ");
+
+                                }
+                            }
+                            else
+                            {
+                                queryWhereClause.Append("[" + prop.Name + "]");
+                                queryWhereClause.Append("=");
+                                queryWhereClause.Append("@" + prop.Name);
+                                queryWhereClause.Append(" and ");
+                            }
+
+
+
+                            #endregion
+
+
+                            //oPropertyValue
+                            //table.Columns.Add(prop.Name, prop.PropertyType);
+                        }
+
+                        queryData2.Remove(queryData2.Length - 1, 1);
+                        queryWhereClause.Remove(queryWhereClause.Length - 4, 4);
+
+                        queryProperty.Remove(queryProperty.Length - 1, 1);
+                        queryData.Remove(queryData.Length - 1, 1);
+
+
+                        #endregion
                     }
 
-                    queryData2.Remove(queryData2.Length - 1, 1);
-                    queryWhereClause.Remove(queryWhereClause.Length - 4, 4);
+                    string dynamicUpdateQuery = string.Format("update [{0}] set  {1}  where  ({2}) ", tableName, queryData2.ToString(), queryWhereClause.ToString());
 
-                    queryProperty.Remove(queryProperty.Length - 1, 1);
-                    queryData.Remove(queryData.Length - 1, 1);
-
-
-                    #endregion
-
-                    string dynamicUpdateQuery = string.Format("update {0} set  {1}  where  ({2}) ", tableName, queryData2.ToString(), queryWhereClause.ToString());
-
-                    string dynamicInsertQuery = string.Format("insert into {0} ( {1} ) values ({2}) ", tableName, queryProperty.ToString(), queryData.ToString());
+                    string dynamicInsertQuery = string.Format("insert into [{0}] ( {1} ) values ({2}) ", tableName, queryProperty.ToString(), queryData.ToString());
 
 
                     dynamicQuery = string.Format(@"
-                                        if exists(select * from {0} where {1} )
+                                        if exists(select * from [{0}] where {1} )
                                         begin
                                          {2}
                                         end
@@ -1074,6 +1205,7 @@ namespace FIK.DAL
                        TypeDescriptor.GetProperties(c.ObjectType);
 
                         string[] selectiveArray = c.SlectiveProperty.Split(',');
+                        string[] selectiveArrayUpdate = c.SlectivePropertyUpdate.Split(',');
                         string[] WhereArray = c.WhereClauseParamForUpdateDelete.Split(',');
 
                         foreach (object obj in c.Model)
@@ -1105,39 +1237,90 @@ namespace FIK.DAL
                                     continue;
                                 }
 
-                                if (!string.IsNullOrEmpty(c.SlectiveProperty))
+                                
+
+                                // defualt execute for insert /update
+                                if (string.IsNullOrEmpty(c.SlectivePropertyUpdate))
                                 {
-                                    if (!string.IsNullOrEmpty(c.ExlcudeAutogeneratePrimaryKey))
+                                    if (!string.IsNullOrEmpty(c.SlectiveProperty))
                                     {
-                                        if (c.ExlcudeAutogeneratePrimaryKey.ToUpper().Contains(prop.Name.ToUpper()))
+                                        if (!string.IsNullOrEmpty(c.ExlcudeAutogeneratePrimaryKey))
                                         {
+                                            if (c.ExlcudeAutogeneratePrimaryKey.ToUpper().Contains(prop.Name.ToUpper()))
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                        //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                        if (isExist(selectiveArray, prop.Name))
+                                        {
+                                            oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                             continue;
                                         }
+                                        //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                                        if (isExist(WhereArray, prop.Name))
+                                        {
+                                            oCmd.Parameters.AddWithValue("@" + prop.Name, value);
+                                        }
                                     }
-                                    //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
-                                    if (isExist(selectiveArray, prop.Name))
+                                    else
                                     {
-                                        oCmd.Parameters.AddWithValue("@" + prop.Name, value);
-                                        continue;
-                                    }
-                                    //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
-                                    if (isExist(WhereArray, prop.Name))
-                                    {
+                                        if (!string.IsNullOrEmpty(c.ExlcudeAutogeneratePrimaryKey))
+                                        {
+                                            if (c.ExlcudeAutogeneratePrimaryKey.ToUpper().Contains(prop.Name.ToUpper()))
+                                            {
+                                                continue;
+                                            }
+                                        }
                                         oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                     }
                                 }
                                 else
                                 {
-                                    if (!string.IsNullOrEmpty(c.ExlcudeAutogeneratePrimaryKey))
+                                    // only execute when insert or update have specific selective property
+                                    // which was initialize by compositedmodel addrecordset function
+                                    if (!string.IsNullOrEmpty(c.SlectiveProperty) || !string.IsNullOrEmpty(c.SlectivePropertyUpdate))
                                     {
-                                        if (c.ExlcudeAutogeneratePrimaryKey.ToUpper().Contains(prop.Name.ToUpper()))
+                                        if (!string.IsNullOrEmpty(c.ExlcudeAutogeneratePrimaryKey))
                                         {
-                                            continue;
+                                            if (c.ExlcudeAutogeneratePrimaryKey.ToUpper().Contains(prop.Name.ToUpper()))
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                        //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
+                                        if (isExist(selectiveArray, prop.Name))
+                                        {
+                                            if(oCmd.Parameters.IndexOf("@" + prop.Name) < 0)
+                                                oCmd.Parameters.AddWithValue("@" + prop.Name, value);
+                                            //continue;
+                                        }
+                                        if (isExist(selectiveArrayUpdate, prop.Name))
+                                        {
+                                            if(oCmd.Parameters.IndexOf("@" + prop.Name) < 0)
+                                            oCmd.Parameters.AddWithValue("@" + prop.Name, value);
+                                            //continue;
+                                        }
+                                        //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
+                                        if (isExist(WhereArray, prop.Name))
+                                        {
+                                            if(oCmd.Parameters.IndexOf("@" + prop.Name) < 0)
+                                                oCmd.Parameters.AddWithValue("@" + prop.Name, value);
                                         }
                                     }
-                                    oCmd.Parameters.AddWithValue("@" + prop.Name, value);
-                                }
+                                    else
+                                    {
+                                        if (!string.IsNullOrEmpty(c.ExlcudeAutogeneratePrimaryKey))
+                                        {
+                                            if (c.ExlcudeAutogeneratePrimaryKey.ToUpper().Contains(prop.Name.ToUpper()))
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                        oCmd.Parameters.AddWithValue("@" + prop.Name, value);
+                                    }
 
+                                }
                                 //oPropertyValue
                                 //table.Columns.Add(prop.Name, prop.PropertyType);
                             }
@@ -1196,6 +1379,8 @@ namespace FIK.DAL
                 prop.PropertyType == typeof(byte[]) ||
                 prop.PropertyType == typeof(byte) ||
                 prop.PropertyType == typeof(byte?) ||
+                prop.PropertyType == typeof(bool?) ||
+                prop.PropertyType == typeof(bool) ||
                 prop.PropertyType == typeof(Byte) ||
                 prop.PropertyType == typeof(Byte?) ||
                 prop.PropertyType == typeof(char) ||

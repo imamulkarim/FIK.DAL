@@ -157,20 +157,24 @@ namespace WindowsForms.Client
                 model2 = new Stock();
                 model2.PrdCode = "1001";
                 model2.RcvQty = 10;
+                model2.BalanceQty = 0;
+                model2.SalesQty = 0;
                 //model.ID = ; auto generate
                 listStock.Add(model2);
 
                 model2 = new Stock();
                 model2.PrdCode = "1002";
                 model2.RcvQty = 15;
+                model2.BalanceQty = 0;
+                model2.SalesQty = 0;
                 //model.ID = ; auto generate
                 listStock.Add(model2);
             }
 
-
             CompositeModel compositeModel = new CompositeModel();
             compositeModel.AddRecordSet<Purchase>(listPurchase, OperationMode.Insert, "Id", "", "","");
-            compositeModel.AddRecordSet<Stock>(listStock, OperationMode.InsertOrUpdaet, "", "PrdCode,+RcvQty", "PrdCode","");
+            //compositeModel.AddRecordSet<Stock>(listStock, OperationMode.InsertOrUpdaet, "", "PrdCode,+RcvQty", "PrdCode","");
+            compositeModel.AddRecordSet<Stock>(listStock, OperationMode.InsertOrUpdaet, "", "", "PrdCode,+RcvQty", "PrdCode","");
 
 
             string msg = "";
