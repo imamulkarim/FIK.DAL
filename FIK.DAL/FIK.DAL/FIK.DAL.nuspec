@@ -11,7 +11,7 @@
     <iconUrl>https://github.com/imamulkarim/FIK.DAL</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes> update bug fix , composite update add new property for specify insert or update , table or column name which is similar to DB object or function ,which cause problem and now it solved </releaseNotes>
+    <releaseNotes> some bug fix ,  </releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>ADO.NET SqlClient FIK.DAL</tags>
   </metadata>

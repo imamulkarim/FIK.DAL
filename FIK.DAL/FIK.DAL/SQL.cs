@@ -1291,22 +1291,36 @@ namespace FIK.DAL
                                         //if (c.SlectiveProperty.ToUpper().Contains(prop.Name.ToUpper()))
                                         if (isExist(selectiveArray, prop.Name))
                                         {
-                                            if(oCmd.Parameters.IndexOf("@" + prop.Name) < 0)
+                                            if (oCmd.Parameters.IndexOf("@" + prop.Name) < 0)
+                                            {
                                                 oCmd.Parameters.AddWithValue("@" + prop.Name, value);
-                                            //continue;
+                                                continue;
+                                            }
                                         }
                                         if (isExist(selectiveArrayUpdate, prop.Name))
                                         {
-                                            if(oCmd.Parameters.IndexOf("@" + prop.Name) < 0)
-                                            oCmd.Parameters.AddWithValue("@" + prop.Name, value);
-                                            //continue;
+                                            if (oCmd.Parameters.IndexOf("@" + prop.Name) < 0)
+                                            {
+                                                oCmd.Parameters.AddWithValue("@" + prop.Name, value);
+                                                continue;
+                                            }
                                         }
                                         //if (c.WhereClauseParamForUpdateDelete.ToUpper().Contains(prop.Name.ToUpper()))
                                         if (isExist(WhereArray, prop.Name))
                                         {
-                                            if(oCmd.Parameters.IndexOf("@" + prop.Name) < 0)
+                                            if (oCmd.Parameters.IndexOf("@" + prop.Name) < 0)
+                                            {
                                                 oCmd.Parameters.AddWithValue("@" + prop.Name, value);
+                                                continue;
+                                            }
                                         }
+
+                                        if (string.IsNullOrEmpty(c.SlectiveProperty) || string.IsNullOrEmpty(c.SlectivePropertyUpdate))
+                                        {
+                                                oCmd.Parameters.AddWithValue("@" + prop.Name, value);
+                                                continue;
+                                        }
+
                                     }
                                     else
                                     {
@@ -1503,29 +1517,55 @@ namespace FIK.DAL
 
                 List<T> list = new List<T>();
 
-                foreach (var row in dataTable.AsEnumerable())
+                for (int i = 0; i < dataTable.Rows.Count; i++)
                 {
+                    DataRow row = dataTable.Rows[i];
                     T obj = new T();
 
-                    foreach (var prop in obj.GetType().GetProperties())
+                    foreach (var c in row.Table.Columns)
                     {
-                        try
-                        {
-                            PropertyInfo propertyInfo = obj.GetType().GetProperty(prop.Name);
+                        string colName = c.ToString();
 
-                            var value = row[prop.Name];
-                            if (value == DBNull.Value)
-                            {
-                                value = null;
-                            }
-                            //propertyInfo.SetValue(obj, Convert.ChangeType(row[prop.Name], propertyInfo.PropertyType), null);
-                            prop.SetValue(obj, value, null);
-                        }
-                        catch
+                        PropertyInfo propertyInfo = obj.GetType().GetProperty(colName);
+                        if (propertyInfo != null)
                         {
-                            continue;
+                            try
+                            {
+                                var value = row[colName];
+                                if (value == DBNull.Value)
+                                {
+                                    value = null;
+                                }
+                                //propertyInfo.SetValue(obj, Convert.ChangeType(row[prop.Name], propertyInfo.PropertyType), null);
+                                propertyInfo.SetValue(obj, value, null);
+                            }
+                            catch
+                            {
+                                continue;
+                            }
                         }
+
                     }
+
+                    //foreach (var prop in obj.GetType().GetProperties())
+                    //{
+                    //    try
+                    //    {
+                    //        PropertyInfo propertyInfo = obj.GetType().GetProperty(prop.Name);
+
+                    //        var value = row[prop.Name];
+                    //        if (value == DBNull.Value)
+                    //        {
+                    //            value = null;
+                    //        }
+                    //        //propertyInfo.SetValue(obj, Convert.ChangeType(row[prop.Name], propertyInfo.PropertyType), null);
+                    //        prop.SetValue(obj, value, null);
+                    //    }
+                    //    catch
+                    //    {
+                    //        continue;
+                    //    }
+                    //}
 
                     list.Add(obj);
                 }
@@ -1537,7 +1577,6 @@ namespace FIK.DAL
                 return null;
             }
         }
-
 
 
         /// <summary>
@@ -1556,29 +1595,56 @@ namespace FIK.DAL
 
                 //List<T> list = new List<T>();
 
-                var row = dataTable.Rows[0];
+                DataRow row = dataTable.Rows[0];
 
                 T obj = new T();
 
-                foreach (var prop in obj.GetType().GetProperties())
+                foreach (var c in row.Table.Columns)
                 {
-                    try
-                    {
-                        PropertyInfo propertyInfo = obj.GetType().GetProperty(prop.Name);
+                    string colName = c.ToString();
 
-                        var value = row[prop.Name];
-                        if (value == DBNull.Value)
-                        {
-                            value = null;
-                        }
-                        //propertyInfo.SetValue(obj, Convert.ChangeType(row[prop.Name], propertyInfo.PropertyType), null);
-                        prop.SetValue(obj, value, null);
-                    }
-                    catch
+                    PropertyInfo propertyInfo = obj.GetType().GetProperty(colName);
+                    if (propertyInfo != null)
                     {
-                        continue;
+                        try
+                        {
+                            var value = row[colName];
+                            if (value == DBNull.Value)
+                            {
+                                value = null;
+                            }
+                            //propertyInfo.SetValue(obj, Convert.ChangeType(row[prop.Name], propertyInfo.PropertyType), null);
+                            propertyInfo.SetValue(obj, value, null);
+                        }
+                        catch
+                        {
+                            continue;
+                        }
                     }
+
                 }
+
+                //T obj = new T();
+
+                //foreach (var prop in obj.GetType().GetProperties())
+                //{
+                //    try
+                //    {
+                //        PropertyInfo propertyInfo = obj.GetType().GetProperty(prop.Name);
+
+                //        var value = row[prop.Name];
+                //        if (value == DBNull.Value)
+                //        {
+                //            value = null;
+                //        }
+                //        //propertyInfo.SetValue(obj, Convert.ChangeType(row[prop.Name], propertyInfo.PropertyType), null);
+                //        prop.SetValue(obj, value, null);
+                //    }
+                //    catch
+                //    {
+                //        continue;
+                //    }
+                //}
 
 
 

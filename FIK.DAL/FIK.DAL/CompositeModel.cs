@@ -112,7 +112,7 @@ namespace FIK.DAL
                 if (!string.IsNullOrEmpty(customeTable))
                     tableName = customeTable;
 
-                list.Add(new CompositeModel { Model = NewModel, ObjectName = tableName, ObjectType = typeof(T), OperationMode = operationMode, ExlcudeAutogeneratePrimaryKey = exlcudeAutogeneratePrimaryKey, SlectiveProperty = slectivePropertyInsert, SlectivePropertyUpdate= SlectivePropertyUpdate, WhereClauseParamForUpdateDelete = whereClauseParamForUpdate });
+                list.Add(new CompositeModel { Model = NewModel, ObjectName = tableName, ObjectType = typeof(T), OperationMode = operationMode, ExlcudeAutogeneratePrimaryKey = exlcudeAutogeneratePrimaryKey, SlectiveProperty = slectivePropertyInsert, SlectivePropertyUpdate= slectivePropertyUpdate, WhereClauseParamForUpdateDelete = whereClauseParamForUpdate });
                 return true;
             }
             catch (Exception ex)
