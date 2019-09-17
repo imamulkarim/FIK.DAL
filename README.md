@@ -9,7 +9,8 @@ To Use This Generate your table Model.cs Class and use this model for easy inser
   FIK.DAL.SQL odal = new FIK.DAL.SQL("ConnectionString");
   
   For Single Insert
-   public bool Create(Counter model, ref string msg)
+
+        public bool Create(Counter model, ref string msg)
         {
             model.CounterID = odal.GetMaxId("CounterID", "000", "Counter", "C");
             return odal.Insert<Counter>(model, "", "", "", ref msg);
