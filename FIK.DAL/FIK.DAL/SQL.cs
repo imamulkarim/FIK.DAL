@@ -1332,7 +1332,7 @@ namespace FIK.DAL
                     {
                         string colName = c.ToString();
 
-                        PropertyInfo propertyInfo = obj.GetType().GetProperty(colName);
+                        PropertyInfo propertyInfo = obj.GetType().GetProperty(colName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                         if (propertyInfo != null)
                         {
                             try
@@ -1448,7 +1448,7 @@ namespace FIK.DAL
                 {
                     try
                     {
-                        PropertyInfo propertyInfo = obj.GetType().GetProperty(prop.Name);
+                        PropertyInfo propertyInfo = obj.GetType().GetProperty(prop.Name, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
                         var value = row[prop.Name];
                         if (value == DBNull.Value)
