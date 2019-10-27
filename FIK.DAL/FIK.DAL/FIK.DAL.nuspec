@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes> some bug fix ,  </releaseNotes>
-    <copyright>Copyright 2018</copyright>
+    <copyright>Copyright 2018-2019</copyright>
     <tags>ADO.NET SqlClient FIK.DAL</tags>
   </metadata>
 </package>
