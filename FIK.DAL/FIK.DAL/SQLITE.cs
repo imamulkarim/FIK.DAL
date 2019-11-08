@@ -2,30 +2,21 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.SQLite;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 
 namespace FIK.DAL
 {
-    public class SQL
+    public class SQLITE
     {
-        private SqlConnection connection;
 
-        public SQL(string connectionString)
-        {
-            connection = new SqlConnection(connectionString);
-        }
+        private SQLiteConnection connection;
 
-        public string GetServerName()
+        public SQLITE(string connectionString)
         {
-            return connection.DataSource;
-        }
-
-        public string GetDatabaseName()
-        {
-            return connection.Database;
+            connection = new SQLiteConnection(connectionString);
         }
 
         /// <summary>
@@ -39,8 +30,8 @@ namespace FIK.DAL
         {
             ErrorMsg = "";
             bool result = false;
-            SqlTransaction oTransaction = null;
-            SqlCommand oCmd = null;
+            SQLiteTransaction oTransaction = null;
+            SQLiteCommand oCmd = null;
 
             string errorQuery = "";
             try
@@ -53,7 +44,7 @@ namespace FIK.DAL
                     foreach (string s in SQL)
                     {
                         errorQuery = s;
-                        oCmd = new SqlCommand(s, connection);
+                        oCmd = new SQLiteCommand(s, connection);
                         oCmd.Transaction = oTransaction;
                         oCmd.ExecuteNonQuery();
                     }
@@ -178,8 +169,8 @@ namespace FIK.DAL
             string dynamicQuery = string.Format("insert into [{0}] ( {1} ) values ({2}) ", tableName, queryProperty.ToString(), queryValue.ToString());
 
 
-            SqlTransaction oTransaction = null;
-            SqlCommand oCmd = null;
+            SQLiteTransaction oTransaction = null;
+            SQLiteCommand oCmd = null;
 
             try
             {
@@ -189,7 +180,7 @@ namespace FIK.DAL
                     oTransaction = connection.BeginTransaction();
                     foreach (T obj in ListTob)
                     {
-                        oCmd = new SqlCommand(dynamicQuery, connection);
+                        oCmd = new SQLiteCommand(dynamicQuery, connection);
 
                         for (int i = 0; i < props.Count; i++)
                         {
@@ -347,8 +338,8 @@ namespace FIK.DAL
             string dynamicQuery = string.Format("delete from [{0}]  where  ({1}) ", tableName, queryWhereClause.ToString());
 
 
-            SqlTransaction oTransaction = null;
-            SqlCommand oCmd = null;
+            SQLiteTransaction oTransaction = null;
+            SQLiteCommand oCmd = null;
 
             try
             {
@@ -360,7 +351,7 @@ namespace FIK.DAL
                     oTransaction = connection.BeginTransaction();
                     foreach (T obj in ListTob)
                     {
-                        oCmd = new SqlCommand(dynamicQuery, connection);
+                        oCmd = new SQLiteCommand(dynamicQuery, connection);
 
                         for (int i = 0; i < props.Count; i++)
                         {
@@ -565,8 +556,8 @@ namespace FIK.DAL
             string dynamicQuery = string.Format("update [{0}] set  {1}  where  ({2}) ", tableName, queryData.ToString(), queryWhereClause.ToString());
 
 
-            SqlTransaction oTransaction = null;
-            SqlCommand oCmd = null;
+            SQLiteTransaction oTransaction = null;
+            SQLiteCommand oCmd = null;
 
             try
             {
@@ -578,7 +569,7 @@ namespace FIK.DAL
                     oTransaction = connection.BeginTransaction();
                     foreach (T obj in ListTob)
                     {
-                        oCmd = new SqlCommand(dynamicQuery, connection);
+                        oCmd = new SQLiteCommand(dynamicQuery, connection);
 
                         for (int i = 0; i < props.Count; i++)
                         {
@@ -1065,8 +1056,8 @@ namespace FIK.DAL
             }
             #endregion
 
-            SqlTransaction oTransaction = null;
-            SqlCommand oCmd = null;
+            SQLiteTransaction oTransaction = null;
+            SQLiteCommand oCmd = null;
 
 
             string queryError = "";
@@ -1090,7 +1081,7 @@ namespace FIK.DAL
 
                         foreach (object obj in c.Model)
                         {
-                            oCmd = new SqlCommand(sqlList[index], connection);
+                            oCmd = new SQLiteCommand(sqlList[index], connection);
                             queryError = sqlList[index];
 
 
@@ -1290,17 +1281,17 @@ namespace FIK.DAL
         public DataTable Select(string SQL, ref string msg)
         {
             DataTable dataTable = null;
-            SqlCommand oCmd = null;
+            SQLiteCommand oCmd = null;
             try
             {
 
                 if (connection != null)
                 {
                     connection.Open();
-                    oCmd = new SqlCommand(SQL, connection);
-                    SqlDataAdapter adapter = new SqlDataAdapter(oCmd);
+                    oCmd = new SQLiteCommand(SQL, connection);
+                    SQLiteDataReader executeReader = oCmd.ExecuteReader(CommandBehavior.SingleResult);
                     DataTable dt = new DataTable();
-                    adapter.Fill(dt);
+                    dt.Load(executeReader);
                     dataTable = dt;
                 }
             }
@@ -1404,7 +1395,7 @@ namespace FIK.DAL
         public string SelectFirstColumn(string SQL, ref string msg)
         {
 
-            SqlCommand oCmd = null;
+            SQLiteCommand oCmd = null;
             string firstRecord = "";
             try
             {
@@ -1412,10 +1403,11 @@ namespace FIK.DAL
                 if (connection != null)
                 {
                     connection.Open();
-                    oCmd = new SqlCommand(SQL, connection);
-                    SqlDataAdapter adapter = new SqlDataAdapter(oCmd);
+                    oCmd = new SQLiteCommand(SQL, connection);
+                    SQLiteDataReader executeReader = oCmd.ExecuteReader(CommandBehavior.SingleResult);
                     DataTable dt = new DataTable();
-                    adapter.Fill(dt);
+                    dt.Load(executeReader);
+
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         firstRecord = dt.Rows[0][0].ToString();
@@ -1526,7 +1518,5 @@ namespace FIK.DAL
 
         }
 
-
     }
-
 }
