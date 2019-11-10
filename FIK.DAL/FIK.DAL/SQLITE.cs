@@ -1344,7 +1344,17 @@ namespace FIK.DAL
                                     value = null;
                                 }
                                 //propertyInfo.SetValue(obj, Convert.ChangeType(row[prop.Name], propertyInfo.PropertyType), null);
-                                propertyInfo.SetValue(obj, value, null);
+                                //propertyInfo.SetValue(obj, value, null);
+                                if (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                                {
+                                    var t = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
+                                    propertyInfo.SetValue(obj, Convert.ChangeType(value, t), null);
+
+                                }
+                                else
+                                {
+                                    propertyInfo.SetValue(obj, Convert.ChangeType(value, propertyInfo.PropertyType), null);
+                                }
                             }
                             catch
                             {
@@ -1458,7 +1468,16 @@ namespace FIK.DAL
                             value = null;
                         }
                         //propertyInfo.SetValue(obj, Convert.ChangeType(row[prop.Name], propertyInfo.PropertyType), null);
-                        prop.SetValue(obj, value, null);
+                        //prop.SetValue(obj, value, null);
+                        if (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                        {
+                            var t = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
+                            propertyInfo.SetValue(obj, Convert.ChangeType(value, t), null);
+                        }
+                        else
+                        {
+                            propertyInfo.SetValue(obj, Convert.ChangeType(value, propertyInfo.PropertyType), null);
+                        }
                     }
                     catch (Exception ex)
                     {
