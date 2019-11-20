@@ -1,18 +1,22 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>FIK.DAL</id>
     <version>$version$</version>
-    <title>$title$</title>
+    <title>FIK.DAL .NET</title>
     <authors>$author$</authors>
-    <owners>$author$</owners>
-    <licenseUrl>https://github.com/imamulkarim/FIK.DAL</licenseUrl>
+    <owners>Imamul Karim</owners>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/imamulkarim/FIK.DAL</projectUrl>
-    <iconUrl>https://github.com/imamulkarim/FIK.DAL</iconUrl>
+   
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <releaseNotes> some bug fix ,  </releaseNotes>
-    <copyright>Copyright 2018-2019</copyright>
-    <tags>ADO.NET SqlClient FIK.DAL</tags>
+    <description>A Simple SQL Query Generator Using ADO.NET Provider with SqlClient</description>
+    <releaseNotes>SQLite Library Bug</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>ADO.NET SQL QUERY Generator</tags>
+	
   </metadata>
+  <files>
+   <file src="bin\Debug\System.Data.SQLite.DLL" target="lib\net40"></file>
+</files>
 </package>

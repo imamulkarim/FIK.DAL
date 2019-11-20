@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("FIKDBConnector")]
+[assembly: AssemblyTitle("FIK.DAL .NET")]
 [assembly: AssemblyDescription("A Simple SQL Query Generator Using ADO.NET Provider with SqlClient")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Imamul Karim")]
-[assembly: AssemblyProduct("FIKDBConnector")]
+[assembly: AssemblyProduct("FIK.DAL .NET SQL Query Generator")]
 [assembly: AssemblyCopyright("Copyright © Imamul Karim 2018-2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.5.24")]
-[assembly: AssemblyFileVersion("1.0.5.24")]
+[assembly: AssemblyVersion("1.0.5.27")]
+[assembly: AssemblyFileVersion("1.0.5.27")]
