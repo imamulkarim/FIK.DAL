@@ -54,6 +54,7 @@ namespace FIK.DAL
                     {
                         errorQuery = s;
                         oCmd = new SqlCommand(s, connection);
+                        oCmd.CommandTimeout = 0;
                         oCmd.Transaction = oTransaction;
                         oCmd.ExecuteNonQuery();
                     }
