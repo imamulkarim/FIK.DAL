@@ -45,6 +45,8 @@ namespace FIK.DAL
                     {
                         errorQuery = s;
                         oCmd = new SQLiteCommand(s, connection);
+                        oCmd.CommandTimeout = 0;
+
                         oCmd.Transaction = oTransaction;
                         oCmd.ExecuteNonQuery();
                     }
@@ -181,6 +183,7 @@ namespace FIK.DAL
                     foreach (T obj in ListTob)
                     {
                         oCmd = new SQLiteCommand(dynamicQuery, connection);
+                        oCmd.CommandTimeout = 0;
 
                         for (int i = 0; i < props.Count; i++)
                         {
@@ -352,6 +355,7 @@ namespace FIK.DAL
                     foreach (T obj in ListTob)
                     {
                         oCmd = new SQLiteCommand(dynamicQuery, connection);
+                        oCmd.CommandTimeout = 0;
 
                         for (int i = 0; i < props.Count; i++)
                         {
@@ -570,6 +574,7 @@ namespace FIK.DAL
                     foreach (T obj in ListTob)
                     {
                         oCmd = new SQLiteCommand(dynamicQuery, connection);
+                        oCmd.CommandTimeout = 0;
 
                         for (int i = 0; i < props.Count; i++)
                         {
@@ -1082,6 +1087,8 @@ namespace FIK.DAL
                         foreach (object obj in c.Model)
                         {
                             oCmd = new SQLiteCommand(sqlList[index], connection);
+                            oCmd.CommandTimeout = 0;
+
                             queryError = sqlList[index];
 
 
@@ -1289,6 +1296,8 @@ namespace FIK.DAL
                 {
                     connection.Open();
                     oCmd = new SQLiteCommand(SQL, connection);
+                    oCmd.CommandTimeout = 0;
+
                     SQLiteDataReader executeReader = oCmd.ExecuteReader(CommandBehavior.SingleResult);
                     DataTable dt = new DataTable();
                     dt.Load(executeReader);
@@ -1414,6 +1423,8 @@ namespace FIK.DAL
                 {
                     connection.Open();
                     oCmd = new SQLiteCommand(SQL, connection);
+                    oCmd.CommandTimeout = 0;
+
                     SQLiteDataReader executeReader = oCmd.ExecuteReader(CommandBehavior.SingleResult);
                     DataTable dt = new DataTable();
                     dt.Load(executeReader);

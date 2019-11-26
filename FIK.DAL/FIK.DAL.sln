@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsForms.Client", "WindowsForms.Client\WindowsForms.Client.csproj", "{5FE0885B-76A7-409C-9BCE-7E6BB365874B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIK.DAL", "FIK.DAL\FIK.DAL.csproj", "{67227119-9724-448C-9578-6F6A1F7D6528}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIK.DAL", "FIK.DAL\FIK.DAL.csproj", "{D8FBB1B3-3CF0-424C-B49D-E87BA663ACA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{5FE0885B-76A7-409C-9BCE-7E6BB365874B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FE0885B-76A7-409C-9BCE-7E6BB365874B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FE0885B-76A7-409C-9BCE-7E6BB365874B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{67227119-9724-448C-9578-6F6A1F7D6528}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67227119-9724-448C-9578-6F6A1F7D6528}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{67227119-9724-448C-9578-6F6A1F7D6528}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67227119-9724-448C-9578-6F6A1F7D6528}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8FBB1B3-3CF0-424C-B49D-E87BA663ACA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8FBB1B3-3CF0-424C-B49D-E87BA663ACA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8FBB1B3-3CF0-424C-B49D-E87BA663ACA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8FBB1B3-3CF0-424C-B49D-E87BA663ACA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

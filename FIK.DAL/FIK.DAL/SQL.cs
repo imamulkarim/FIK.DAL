@@ -191,6 +191,7 @@ namespace FIK.DAL
                     foreach (T obj in ListTob)
                     {
                         oCmd = new SqlCommand(dynamicQuery, connection);
+                        oCmd.CommandTimeout = 0;
 
                         for (int i = 0; i < props.Count; i++)
                         {
@@ -362,6 +363,7 @@ namespace FIK.DAL
                     foreach (T obj in ListTob)
                     {
                         oCmd = new SqlCommand(dynamicQuery, connection);
+                        oCmd.CommandTimeout = 0;
 
                         for (int i = 0; i < props.Count; i++)
                         {
@@ -580,6 +582,7 @@ namespace FIK.DAL
                     foreach (T obj in ListTob)
                     {
                         oCmd = new SqlCommand(dynamicQuery, connection);
+                        oCmd.CommandTimeout = 0;
 
                         for (int i = 0; i < props.Count; i++)
                         {
@@ -1092,6 +1095,8 @@ namespace FIK.DAL
                         foreach (object obj in c.Model)
                         {
                             oCmd = new SqlCommand(sqlList[index], connection);
+                            oCmd.CommandTimeout = 0;
+
                             queryError = sqlList[index];
 
 
@@ -1299,6 +1304,7 @@ namespace FIK.DAL
                 {
                     connection.Open();
                     oCmd = new SqlCommand(SQL, connection);
+                    oCmd.CommandTimeout = 0;
                     SqlDataAdapter adapter = new SqlDataAdapter(oCmd);
                     DataTable dt = new DataTable();
                     adapter.Fill(dt);
@@ -1414,6 +1420,8 @@ namespace FIK.DAL
                 {
                     connection.Open();
                     oCmd = new SqlCommand(SQL, connection);
+                    oCmd.CommandTimeout = 0;
+
                     SqlDataAdapter adapter = new SqlDataAdapter(oCmd);
                     DataTable dt = new DataTable();
                     adapter.Fill(dt);
