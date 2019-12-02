@@ -12,10 +12,13 @@ namespace FIK.DAL
     public class SQL
     {
         private SqlConnection connection;
+        
 
         public SQL(string connectionString)
         {
             connection = new SqlConnection(connectionString);
+         
+            //var command = class1.sqlCommand;
         }
 
         public string GetServerName()
