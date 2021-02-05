@@ -506,7 +506,7 @@ namespace FIK.DAL
                             else if (updateModifier.Contains("-"))
                             {
                                 queryData.Append("ISNULL(" + "[" + prop.Name + "]" + ",0)");
-                                queryData.Append("+");
+                                queryData.Append("-");
                             }
 
 

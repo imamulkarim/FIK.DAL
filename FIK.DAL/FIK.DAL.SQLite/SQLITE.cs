@@ -495,7 +495,7 @@ namespace FIK.DAL.SQLite
                             else if (updateModifier.Contains("-"))
                             {
                                 queryData.Append("ISNULL(" + "[" + prop.Name + "]" + ",0)");
-                                queryData.Append("+");
+                                queryData.Append("-");
                             }
 
 
@@ -517,7 +517,7 @@ namespace FIK.DAL.SQLite
                         else if (updateModifier.Contains("-"))
                         {
                             queryData.Append("ISNULL(" + "[" + prop.Name + "]" + ",0)");
-                            queryData.Append("+");
+                            queryData.Append("-");
                         }
 
 
