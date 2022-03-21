@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FIK.DAL.SQLite", "FIK.DAL.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIK.DAL", "FIK.DAL\FIK.DAL.csproj", "{42B177D8-A318-4000-AC78-A3791CDE467B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIK.DAL.PostgreSQL", "FIK.DAL.PostgreSQL\FIK.DAL.PostgreSQL.csproj", "{1A046D53-955E-4073-B1B6-EFE5DC2D57A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FIK.DAL.PostgreSQL", "FIK.DAL.PostgreSQL\FIK.DAL.PostgreSQL.csproj", "{1A046D53-955E-4073-B1B6-EFE5DC2D57A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIK.DAL.Core", "FIK.DAL.Core\FIK.DAL.Core.csproj", "{EDBCD6F4-0FFA-42C9-A5D8-0BA4CB673AAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{1A046D53-955E-4073-B1B6-EFE5DC2D57A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A046D53-955E-4073-B1B6-EFE5DC2D57A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A046D53-955E-4073-B1B6-EFE5DC2D57A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDBCD6F4-0FFA-42C9-A5D8-0BA4CB673AAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDBCD6F4-0FFA-42C9-A5D8-0BA4CB673AAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDBCD6F4-0FFA-42C9-A5D8-0BA4CB673AAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDBCD6F4-0FFA-42C9-A5D8-0BA4CB673AAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
