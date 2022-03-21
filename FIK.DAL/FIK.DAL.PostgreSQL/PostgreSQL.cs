@@ -484,7 +484,7 @@ namespace FIK.DAL.PostgreSQL
                         }
                         else if (updateModifier.Contains("-"))
                         {
-                            queryData.Append("ISNULL(" + prop.Name + ",0)");
+                            queryData.Append("ISNULL("+ prop.Name + ",0)");
                             queryData.Append("-");
                         }
 
@@ -1319,7 +1319,7 @@ namespace FIK.DAL.PostgreSQL
                     connection.Open();
                     oCmd = new NpgsqlCommand(SQL, connection);
                     oCmd.CommandTimeout = 0;
-
+                    
                     NpgsqlDataReader executeReader = oCmd.ExecuteReader(CommandBehavior.SingleResult);
                     DataTable dt = new DataTable();
                     dt.Load(executeReader);
@@ -1412,9 +1412,8 @@ namespace FIK.DAL.PostgreSQL
             string id = "";
 
             string
-            selectQuery = @"SELECT ISNULL(MAX( CAST(SUBSTRING( " + coloumName + " ," + (prefix.Length + 1) + ", LEN(" + coloumName + @") ) AS INT) ),0)
-                            FROM " + tableName + @"
-                            WHERE " + coloumName + " LIKE '" + prefix + "%' ";
+            selectQuery = @"select max(CAST(RIGHT(" + coloumName + "," + rightStringLength + ")as decimal)) as MaxColoumn from " + tableName + @"
+                            where " + coloumName + " like '" + prefix + "%'";
 
             string msg = "";
             DataTable dataTable = Select(selectQuery, ref msg);
@@ -1427,13 +1426,13 @@ namespace FIK.DAL.PostgreSQL
             //id = (decimal.Parse(initialValue) + decimal.Parse(id)).ToString();
             if (string.IsNullOrEmpty(id))
             {
-                return prefix + decimal.Parse("1").ToString(rightStringLength);
+                return prefix + decimal.Parse("1");
             }
             else
             {
                 //id = id.Substring(prefix.Length, id.Length - 1);
                 decimal _id = decimal.Parse(id) + 1;
-                return prefix + _id.ToString(rightStringLength);
+                return prefix + _id;
             }
         }
     }
